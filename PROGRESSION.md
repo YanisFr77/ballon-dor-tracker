@@ -58,6 +58,7 @@
 
 ## Prochaine session : contexte
 
+- **Titre de la prochaine session :** `[0.1-ext] Extension Claude Code dans VS Code`
 - **Mission suivante :** installer l'extension Claude Code dans VS Code, puis ouvrir le projet dans VS Code. C'est une mission courte, le bon moment pour expliquer ce que l'extension apporte (diff, sélection de code, etc.).
 - **Ensuite :** 0.1 étape 4, `main.py` qui classe 5 candidats au Ballon d'Or 2027 avec un score, écrit sans code généré. Penser à activer le venv avant de lancer Python.
 - **Puis :** 0.2 "Le transfert" (laptop), théorie "Building effective agents", boss fight du niveau 0.
