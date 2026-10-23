@@ -12,7 +12,7 @@
   1. Quelle différence entre un workflow et un agent ?
   2. Les agents no-code du boulot, c'est plutôt l'un ou l'autre ?
   3. Un pattern de l'article utile pour le Tracker ?
-- [ ] Installer l'extension Claude Code dans VS Code
+- [x] Installer l'extension Claude Code dans VS Code
 - [ ] Boss fight du niveau 0
 
 **Délai :** fin de la première semaine en entreprise.
@@ -56,16 +56,30 @@
 - Commit expliqué avec ses mots ✅ : « l'id du projet à l'instant t », un point de sauvegarde pour restaurer un fichier. Il reste la question « que perd-on en supprimant `.git` ? ».
 - `.git` ✅ : supprimer ce dossier fait perdre tout l'historique local, mais le code actuel reste sur le disque. Nuance donnée par Claude : une copie de l'historique poussé reste aussi sur GitHub. **Étape 3 validée.**
 
+### 2026-10-24 : Mission extension Claude Code dans VS Code
+- Mission donnée : installer l'extension, ouvrir le dossier, choisir l'interpréteur du venv, prouver dans le terminal intégré.
+- Remarque de revue : les messages des commits `43842cd` et `8576951` parlent de l'« étape 4 », alors que ces commits ne touchent que la doc. Un message de commit doit décrire ce qui change.
+- Étape 4 : `where.exe python` affiche `.venv` en premier ✅. Mais le venv a été activé **à la main** avec `Activate.ps1`, ce qui ne prouve pas que VS Code utilise l'interpréteur du venv (étape 3). Il faut le prouver dans un nouveau terminal, sans activation manuelle.
+- Q1 à moitié : l'idée est juste, mais formulée de façon floue (« pas accès aux bons fichiers »). Q2 pas comprise, elle a été reformulée.
+- Preuve validée ✅ (capture d'écran) : extension Claude Code installée et ouverte, dossier du projet ouvert. Dans un nouveau terminal, VS Code active le venv **tout seul** (`Set-ExecutionPolicy -Scope Process ...; & ...\Activate.ps1`), puis `where.exe python` affiche `.venv` en premier.
+- Q2 ✅ : il distingue le Python du venv et le Python global, et sait pourquoi on utilise le venv (versions des librairies propres au projet, pas de conflit avec le Python global).
+- Q1 toujours à moitié : il mélange encore Git et venv (« il ne va pas être dans un environnement virtuel »). Correction donnée : Git cherche `.git` dans le dossier courant puis dans ses parents (depuis `Documents`, `git status` renvoie `fatal: not a git repository`). VS Code cherche `.venv` à la racine du dossier ouvert (depuis `Documents`, il prend le Python global).
+- Visite guidée de l'extension : diff dans l'éditeur, contexte du fichier ouvert ou de la sélection, modes de permission. Conseil donné : passer de « Edit automatically » à un mode qui demande avant chaque modification, plus cohérent avec le contrat.
+- **Mission extension validée.**
+
 ## Prochaine session : contexte
 
-- **Titre de la prochaine session :** `[0.1-ext] Extension Claude Code dans VS Code`
-- **Mission suivante :** installer l'extension Claude Code dans VS Code, puis ouvrir le projet dans VS Code. C'est une mission courte, le bon moment pour expliquer ce que l'extension apporte (diff, sélection de code, etc.).
-- **Ensuite :** 0.1 étape 4, `main.py` qui classe 5 candidats au Ballon d'Or 2027 avec un score, écrit sans code généré. Penser à activer le venv avant de lancer Python.
+- **Titre de la prochaine session :** `[0.1-4] main.py : classement des candidats`
+- **Mission suivante :** 0.1 étape 4, un `main.py` qui classe 5 candidats au Ballon d'Or 2027 avec un score, écrit sans code généré. Le faire dans VS Code (le venv s'active tout seul dans le terminal intégré).
+- **Question d'échauffement à poser :** dans son terminal, VS Code lance `Set-ExecutionPolicy -Scope Process`, alors que Yanis avait utilisé `-Scope CurrentUser`. Quelle différence ? On vérifie ainsi s'il a corrigé sa compréhension des scopes.
 - **Puis :** 0.2 "Le transfert" (laptop), théorie "Building effective agents", boss fight du niveau 0.
 - **Points fragiles de Yanis à surveiller :**
   - Confusion entre `.env` (fichier de secrets) et `.venv` (dossier du venv) : déjà 2 fois.
   - A tendance à lancer des commandes sans vérifier ce qu'elles ciblent (cas des arguments de `venv`).
   - Réponses parfois trop rapides ou approximatives, ou trop « manuel » (sans doute copiées) : lui demander de reformuler avec ses mots. Il y arrive quand on insiste.
   - Réflexes Linux dans PowerShell (`ls -a`).
+  - Mélange les rôles de Git et du venv : deux outils indépendants qui sont juste dans le même dossier.
+  - Prouve parfois le mauvais point : il a activé le venv à la main pour prouver que VS Code l'activait.
+  - Messages de commit qui ne décrivent pas ce qui change.
 - **Points forts :** se débloque seul quand il lit les messages d'erreur (politique d'exécution PowerShell, `git init` manquant, `ls -Force`). A fait le bonus `init.defaultBranch=main`.
-- **Environnement :** Windows, PowerShell, Python 3.13.14 (Microsoft Store). Activer le venv avec `.\.venv\Scripts\Activate.ps1`. Utiliser le panneau Terminal de l'app pour que Claude puisse lire les commandes. Git : branche `main`, remote `origin` = github.com/YanisFr77/ballon-dor-tracker, authentification via Git Credential Manager (navigateur). Identité : gmail en local pour ce repo, email de l'université en global.
+- **Environnement :** Windows, PowerShell, Python 3.13.14 (Microsoft Store). Activer le venv avec `.\.venv\Scripts\Activate.ps1`. VS Code est installé avec l'extension Claude Code, et l'interpréteur du venv est sélectionné. Utiliser le panneau Terminal de l'app pour que Claude puisse lire les commandes, ou coller la sortie du terminal VS Code. Git : branche `main`, remote `origin` = github.com/YanisFr77/ballon-dor-tracker, authentification via Git Credential Manager (navigateur). Identité : gmail en local pour ce repo, email de l'université en global.
