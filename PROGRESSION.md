@@ -5,7 +5,7 @@
 ### Missions du niveau 0
 - [x] 0.1 étape 1 : créer le dossier `ballon-dor-tracker`
 - [x] 0.1 étape 2 : environnement virtuel Python (venv), `.gitignore` racine (`.venv/` et `.env`)
-- [ ] 0.1 étape 3 : `git init`, repo GitHub public, premier push
+- [x] 0.1 étape 3 : `git init`, repo GitHub public, premier push
 - [ ] 0.1 étape 4 : `main.py` qui classe 5 candidats au Ballon d'Or 2027 avec un score (sans code généré par l'IA)
 - [ ] 0.2 "Le transfert" : installer Python, VS Code et Git sur le laptop perso, cloner, ajouter un 6e candidat, push, puis pull sur le PC fixe
 - [ ] Théorie : lire "Building effective agents" (Anthropic) et répondre aux 3 questions
@@ -46,14 +46,25 @@
 ### 2026-10-24 : Mission 0.1 étape 3 (Git et GitHub)
 - Mission donnée. Oubli de Claude : `git init` n'était pas écrit explicitement. Yanis l'a trouvé seul en lisant l'erreur `fatal: not a git repository`.
 - `git init` fait. `git status` affiche `.gitignore`, `CLAUDE.md` et `PROGRESSION.md`, mais pas `.venv` ✅. La branche s'appelle `master`, elle doit encore devenir `main`.
+- Branche renommée en `main` ✅, plus `init.defaultBranch=main` en global (bonus) ✅. Staging et `git status` faits ✅. Commit `46866f3` "initialisation projet ballon dor tracker" ✅.
+- Identité configurée à deux niveaux : email de l'université en global, gmail en local (c'est celui qui a signé le commit). Demander à Yanis si c'est voulu.
+- Remote `origin` ajouté ✅. **Le push échoue** : `Password authentication is not supported`, GitHub refuse les mots de passe depuis 2021. Le Git Credential Manager est installé : il faut passer par la connexion navigateur, ou supprimer un identifiant erroné resté dans le Gestionnaire d'identification Windows.
+- Push réussi ✅ : `origin/main` est sur `46866f3`, Claude l'a vérifié avec `git ls-remote`.
+- Questions : « le local l'emporte sur le global » ✅. « Quel email pour GitHub ? » sans réponse. `where.exe python` ✅. « Qu'a créé `git init` ? » ❌ : il répond « invisible car aucun commit », alors que c'est le dossier `.git`, caché, qui contient tout le dépôt.
+- Questions de fin d'étape : Q2 (`.gitignore`) ✅, Q3 (README côté GitHub, push refusé) ✅. Q1 à moitié : `add` ✅, mais pour lui `commit` = « ajouter un commentaire », alors que c'est un **instantané** enregistré dans l'historique. Réponse à préciser.
+- Q1 reformulée : correcte, mais rédaction très « manuel », peut-être copiée ; à vérifier avec ses propres mots. `ls -a` échoue, puis Yanis trouve `ls -Force` seul ✅ : `.git` apparaît avec l'attribut `h` (caché). « Si on supprime `.git` » : réponse incomplète (« plus de connexion à GitHub »), il oublie que tout l'historique local est perdu. Email GitHub ✅. Fichiers présents sur github.com ✅.
+- Commit expliqué avec ses mots ✅ : « l'id du projet à l'instant t », un point de sauvegarde pour restaurer un fichier. Il reste la question « que perd-on en supprimant `.git` ? ».
+- `.git` ✅ : supprimer ce dossier fait perdre tout l'historique local, mais le code actuel reste sur le disque. Nuance donnée par Claude : une copie de l'historique poussé reste aussi sur GitHub. **Étape 3 validée.**
 
 ## Prochaine session : contexte
 
-- **Mission suivante :** 0.1 étape 3, "Git et GitHub" : `git init`, premier commit (`CLAUDE.md`, `PROGRESSION.md`, `.gitignore`), création d'un repo GitHub public, premier push. Vérifier avec `git status` que `.venv` n'apparaît pas.
-- **Ensuite :** installer l'extension Claude Code dans VS Code, puis l'étape 4 (`main.py`).
+- **Mission suivante :** installer l'extension Claude Code dans VS Code, puis ouvrir le projet dans VS Code. C'est une mission courte, le bon moment pour expliquer ce que l'extension apporte (diff, sélection de code, etc.).
+- **Ensuite :** 0.1 étape 4, `main.py` qui classe 5 candidats au Ballon d'Or 2027 avec un score, écrit sans code généré. Penser à activer le venv avant de lancer Python.
+- **Puis :** 0.2 "Le transfert" (laptop), théorie "Building effective agents", boss fight du niveau 0.
 - **Points fragiles de Yanis à surveiller :**
   - Confusion entre `.env` (fichier de secrets) et `.venv` (dossier du venv) : déjà 2 fois.
   - A tendance à lancer des commandes sans vérifier ce qu'elles ciblent (cas des arguments de `venv`).
-  - Réponses parfois trop rapides ou approximatives : lui demander de préciser.
-- **Points forts :** se débloque seul quand il lit les messages d'erreur (cas de la politique d'exécution PowerShell).
-- **Environnement :** Windows, PowerShell, Python 3.13.14 (Microsoft Store). Activer le venv avec `.\.venv\Scripts\Activate.ps1`. Utiliser le panneau Terminal de l'app pour que Claude puisse lire les commandes. Ensuite, étape 2 terminée → étape 3 (Git et GitHub).
+  - Réponses parfois trop rapides ou approximatives, ou trop « manuel » (sans doute copiées) : lui demander de reformuler avec ses mots. Il y arrive quand on insiste.
+  - Réflexes Linux dans PowerShell (`ls -a`).
+- **Points forts :** se débloque seul quand il lit les messages d'erreur (politique d'exécution PowerShell, `git init` manquant, `ls -Force`). A fait le bonus `init.defaultBranch=main`.
+- **Environnement :** Windows, PowerShell, Python 3.13.14 (Microsoft Store). Activer le venv avec `.\.venv\Scripts\Activate.ps1`. Utiliser le panneau Terminal de l'app pour que Claude puisse lire les commandes. Git : branche `main`, remote `origin` = github.com/YanisFr77/ballon-dor-tracker, authentification via Git Credential Manager (navigateur). Identité : gmail en local pour ce repo, email de l'université en global.
