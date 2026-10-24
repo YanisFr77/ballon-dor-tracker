@@ -68,7 +68,9 @@ kane = Joueur(nom="Harry Kane", club="FC Bayern", buts=61, passes_d=7,titres_maj
 dembele = Joueur(nom="Ousmane Dembélé", club="Paris Saint-Germain", buts=20, passes_d=11, titres_majeurs=["Ligue 1", "LDC", "Supercoupe UEFA", "Coupe Intercontinentale", "Trophée des Champions"])
 kvara = Joueur(nom="Khvicha Kvaratskhelia", club="Paris Saint-Germain", buts=19, passes_d=11, titres_majeurs=["Ligue 1", "LDC", "Supercoupe UEFA", "Coupe Intercontinentale", "Trophée des Champions"])
 mbappe = Joueur(nom="Kylian Mbappé", club="Real Madrid", buts=42, passes_d=7, titres_majeurs=[])
+pedri = Joueur(nom="Pedri", club="FC Barcelona", buts=2, passes_d=12, titres_majeurs=["Supercoupe d'Espagne", "La Liga", "CDM"])
 
-candidats = [yamal, kane, dembele, mbappe, kvara]
+
+candidats = [yamal, kane, dembele, mbappe, kvara, pedri]
 
 classement(candidats)
