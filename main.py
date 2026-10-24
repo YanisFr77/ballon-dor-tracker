@@ -54,10 +54,10 @@ class Joueur:
         score_performance = self.buts * BAREME_PERFORMANCES.get("but") + self.passes_d * BAREME_PERFORMANCES.get("passe_d")
         score_titres = 0
         for t in self.titres_majeurs:
-            score_titres += BAREME_TITRES.get(t)
+            score_titres += BAREME_TITRES[t]
         return score_performance + score_titres
 
-def classement(joueurs: list[str]):
+def classement(joueurs: list[Joueur]):
     joueurs.sort(key=Joueur.score, reverse=True)
     for i in range (0, len(joueurs)):
         print(f"{i+1}. {joueurs[i].nom} ({joueurs[i].club}) : {joueurs[i].score()} pts")
