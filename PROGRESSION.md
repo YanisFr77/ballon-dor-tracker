@@ -66,13 +66,26 @@
 - Q1 toujours à moitié : il mélange encore Git et venv (« il ne va pas être dans un environnement virtuel »). Correction donnée : Git cherche `.git` dans le dossier courant puis dans ses parents (depuis `Documents`, `git status` renvoie `fatal: not a git repository`). VS Code cherche `.venv` à la racine du dossier ouvert (depuis `Documents`, il prend le Python global).
 - Visite guidée de l'extension : diff dans l'éditeur, contexte du fichier ouvert ou de la sélection, modes de permission. Conseil donné : passer de « Edit automatically » à un mode qui demande avant chaque modification, plus cohérent avec le contrat.
 - **Mission extension validée.**
+- Yanis a choisi de rester dans la même session pour l'étape 4 (conversation encore courte). La session est renommée `[0.1-4] main.py : classement des candidats`.
+- Question d'échauffement sur `-Scope Process` vs `CurrentUser` posée. Mission étape 4 donnée.
+- Réponse à l'échauffement juste sur le fond (Process = le terminal en cours, CurrentUser = permanent pour son compte). Mais elle se termine par un `»` orphelin : sans doute copiée. Questions de contrôle posées : pourquoi VS Code relance-t-il `Process` alors que `CurrentUser` est déjà réglé, et quel scope demande les droits admin ?
+- Contrôle ✅ : `LocalMachine` demande les droits admin, et c'est le scope par défaut si on omet `-Scope` (bonus trouvé seul). L'erreur de l'étape 2 sur `CurrentUser` est corrigée. Pour `Process`, il sait qu'il a la priorité sur `CurrentUser` et `LocalMachine`. Complément donné par Claude : VS Code ne connaît pas la configuration de la machine, il garantit donc que l'activation marche partout, sans rien modifier de façon permanente. **Échauffement validé.**
+- `main.py` commencé avec une `@dataclass Joueur` (nom, club, buts, `passes_D`, `prix_moyen = 0.0`) et un seul joueur créé avec des arguments positionnels. Choix de la dataclass validé sur le principe, mais il doit l'expliquer (c'est un outil avancé pour son niveau, était-ce une suggestion de l'IA ?). Revue faite : nommage `passes_D`, sens de `prix_moyen` et de sa valeur par défaut, arguments positionnels peu lisibles.
+
+### 2026-10-25 : Recadrage du projet et du contrat
+- Yanis remet en question la règle « zéro IA » : son but est d'être AI engineer (piloter l'IA, la challenger, concevoir les algorithmes), pas développeur expert. Argument recevable. Limite rappelée : on ne peut pas relire du code qu'on ne sait pas lire (exemple de la dataclass).
+- **Décision : mode copilote à partir du niveau 1.** Spec ou algorithme écrit par Yanis, puis code généré par l'IA, puis relecture avec questions de Claude et chasses au bug annoncées. Le niveau 0 (`main.py`) reste écrit à la main. Les boss fights restent sans IA.
+- **Décision : le projet s'élargit (option B).** Il devient un analyste foot IA multi-agents. L'Oracle Ballon d'Or est la fonctionnalité phare et le benchmark d'eval (vérité terrain 2023-2026). L'option C (agent scout/mercato) est gardée pour après le niveau 7.
+- **Roadmap réécrite dans `CLAUDE.md`** : dbt et le médaillon complet sont abandonnés, le LLM arrive au niveau 2, deux niveaux nouveaux : les evals et l'observabilité (Langfuse ou LangSmith) au niveau 3, « Construis ton harnais » au niveau 4.
+- Mémoire automatique de Claude comparée à `CLAUDE.md` : elle est stockée hors du repo et propre à chaque machine, donc on garde `PROGRESSION.md` comme mémoire du projet.
+- « OMP » = **Oh My Pi**, un harnais d'agent de code pour le terminal, à l'opposé de Pi (harnais minimaliste) : beaucoup d'outils intégrés (LSP, navigateur, subagents). À étudier au niveau 4 comme exemple de harnais.
 
 ## Prochaine session : contexte
 
 - **Titre de la prochaine session :** `[0.1-4] main.py : classement des candidats`
-- **Mission suivante :** 0.1 étape 4, un `main.py` qui classe 5 candidats au Ballon d'Or 2027 avec un score, écrit sans code généré. Le faire dans VS Code (le venv s'active tout seul dans le terminal intégré).
-- **Question d'échauffement à poser :** dans son terminal, VS Code lance `Set-ExecutionPolicy -Scope Process`, alors que Yanis avait utilisé `-Scope CurrentUser`. Quelle différence ? On vérifie ainsi s'il a corrigé sa compréhension des scopes.
-- **Puis :** 0.2 "Le transfert" (laptop), théorie "Building effective agents", boss fight du niveau 0.
+- **Mission suivante :** finir 0.1 étape 4, `main.py` **écrit à la main** (dernier code 100 % manuel du parcours). Mission complète : 5 joueurs dans une seule structure, au moins 3 stats de performance, une fonction de score, des poids définis une seule fois en haut du fichier, un tri fait par le code, un affichage `1. Nom (Club) : X pts`, puis un commit au message descriptif et un push.
+- **En attente de Yanis sur `main.py` :** expliquer ce que fait `@dataclass` (pourquoi `print(j)` affiche un rendu lisible) et d'où vient l'idée. Corriger `passes_D` (snake_case, pas d'espace avant `:`), remplacer ou justifier `prix_moyen` et sa valeur par défaut, et utiliser des arguments nommés.
+- **Puis :** 0.2 "Le transfert" (laptop), théorie "Building effective agents", boss fight du niveau 0. Ensuite, niveau 1 en mode copilote : il faudra expliquer à Yanis comment se passe une mission dans ce mode.
 - **Points fragiles de Yanis à surveiller :**
   - Confusion entre `.env` (fichier de secrets) et `.venv` (dossier du venv) : déjà 2 fois.
   - A tendance à lancer des commandes sans vérifier ce qu'elles ciblent (cas des arguments de `venv`).
