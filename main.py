@@ -48,7 +48,7 @@ class Joueur:
         self.titres_majeurs = titres_majeurs  # ex: ["LDC", "Euro_Copa_CDM", "Championnat"]
 
     def affiche_joueur(self):
-        print(f"Joueur(nom={self.nom}, club={self.club}, buts={self.buts}, passes_d={self.passes_d}, valeur_marchande={self.valeur_marchande}, titres_remporte={self.titres_majeurs})")
+        print(f"Joueur(nom={self.nom}, club={self.club}, buts={self.buts}, passes_d={self.passes_d}, titres_remporte={self.titres_majeurs})")
 
     def score(self):
         score_performance = self.buts * BAREME_PERFORMANCES.get("but") + self.passes_d * BAREME_PERFORMANCES.get("passe_d")
@@ -57,7 +57,7 @@ class Joueur:
             score_titres += BAREME_TITRES.get(t)
         return score_performance + score_titres
 
-def classement(joueurs: list[str]) -> list[Joueur]:
+def classement(joueurs: list[str]):
     joueurs.sort(key=Joueur.score, reverse=True)
     for i in range (0, len(joueurs)):
         print(f"{i+1}. {joueurs[i].nom} ({joueurs[i].club}) : {joueurs[i].score()} pts")
