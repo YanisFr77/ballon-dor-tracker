@@ -3,7 +3,11 @@
 Projet d'apprentissage de Yanis (21 ans, M2 informatique, alternant Data/IA, objectif : AI engineer).
 Le projet est le terrain de jeu. Le vrai but : apprendre l'AI engineering, surtout le côté **agentique** (harnais, orchestration, evals, observabilité, RAG, MCP), pas devenir développeur expert.
 
-**Le produit visé :** un système multi-agents qui répond à des questions sur les joueurs et les équipes (agent stats sur la base DuckDB, agent actu via RAG, agent critique, orchestrateur). L'**Oracle Ballon d'Or** est la fonctionnalité phare et sert de **benchmark d'eval** : les résultats 2023 à 2026 sont la vérité terrain. Extension prévue plus tard : un **agent scout/mercato** (« latéral gauche, moins de 23 ans, moins de 30 M€ »).
+**Le produit visé :** un système multi-agents qui répond à des questions sur les joueurs et les équipes (agent stats sur la base DuckDB, agent actu via RAG, agent critique, orchestrateur). L'**Oracle Ballon d'Or** est la fonctionnalité phare et sert de **benchmark d'eval** : les résultats 2023 à 2026 sont la vérité terrain (2026 connu le 26 octobre 2026). Extension prévue plus tard : un **agent scout/mercato** (« latéral gauche, moins de 23 ans, moins de 30 M€ »).
+
+**L'app finale :** une app web avec trois volets. **Analyste** : un chat où les agents répondent avec leurs sources. **Oracle** : le podium prédit, mis à jour chaque semaine, avec son score de backtest affiché. **Scout** : en extension. La valeur du projet est la **rigueur visible** (précision mesurée, agent critique contre les stats inventées, traces), pas la quantité de données.
+
+**Calendrier du Ballon d'Or :** depuis 2024, une édition couvre une saison européenne (août à juillet), compétitions internationales comprises. L'édition N correspond à la saison (N-1)/N. Exemple : l'édition 2026 couvre la saison 25/26 plus la CDM 2026.
 
 **Au début de chaque session : lire `PROGRESSION.md` pour savoir où on en est.**
 
@@ -26,18 +30,20 @@ Le projet est le terrain de jeu. Le vrai but : apprendre l'AI engineering, surto
 
 Ton : tutoiement, ludique, vocabulaire foot ou jeu vidéo bienvenu, mais concis.
 
+**Rythme des questions (demande de Yanis, 2026-10-24) :** au plus 1 ou 2 questions par message, seulement celles qui bloquent (une ligne pas comprise, une donnée fausse). Pas de questions bonus en cascade ni de vérifications de détail : faire avancer la mission d'abord.
+
 ## Roadmap (carte globale, détail niveau par niveau)
 
 | Niv. | Nom | Contenu | Côté Claude |
 |---|---|---|---|
 | 0 | Le vestiaire | Python, venv, Git, GitHub, VS Code, `main.py` écrit à la main | Sessions, CLAUDE.md, permissions, plan mode, diff, extension VS Code |
-| 1 | Les stats | API foot → DuckDB (données brutes puis une couche propre en SQL simple). Début du mode copilote | Donner du contexte, debugger avec Claude, commits comme checkpoints |
-| 2 | Premier contact LLM | Claude API, prompting, sorties structurées. **Oracle v1** : stats + LLM → podium prédit | Comprendre "sous le capot", première skill |
-| 3 | Les evals | Backtest de l'Oracle sur 2023-2026, métriques, LLM-as-judge, **observabilité** (Langfuse ou LangSmith) | Slash commands |
+| 1 | Les stats | **Choisir la source de données** (voir les points de vigilance), API foot → DuckDB (données brutes puis une couche propre en SQL simple), premiers tests avec **pytest**. Début du mode copilote | Donner du contexte, debugger avec Claude, commits comme checkpoints |
+| 2 | Premier contact LLM | Claude API, prompting, sorties structurées avec **Pydantic**. **Oracle v1** : stats + LLM → podium prédit. **Première page Streamlit** qui affiche l'Oracle v1 (début de la tranche verticale) | Comprendre "sous le capot", première skill |
+| 3 | Les evals | Backtest de l'Oracle sur 2023-2026 : **top 30** de chaque édition, métriques de classement, **parade contre la contamination**, LLM-as-judge, **observabilité** (Langfuse ou LangSmith). La page Streamlit affiche le score du backtest | Slash commands |
 | 4 | Construis ton harnais | Boucle d'agent faite maison : tools, gestion du contexte, mémoire, permissions. Comparaison avec Claude Code, Pi, Oh My Pi | Hooks, subagents vus comme des briques de harnais |
-| 5 | L'orchestration | Multi-agents avec LangGraph (stats, actu, critique, orchestrateur), traces et evals du workflow | Agent SDK |
-| 6 | Le RAG actu + MCP | Embeddings, base vectorielle, ingestion d'articles. Construire un **serveur MCP** sur les données foot | MCP : utiliser puis construire |
-| 7 | L'app | Streamlit puis déploiement | |
+| 5 | L'orchestration | Multi-agents avec LangGraph (stats, actu, critique, orchestrateur), traces et evals du workflow. **Comparer en eval un agent unique et le multi-agents** : garder le multi-agents seulement s'il gagne | Agent SDK |
+| 6 | Le RAG actu + MCP | Embeddings, base vectorielle, ingestion d'articles **datés** (point-in-time : pour le backtest, seulement les articles publiés avant le vote). Construire un **serveur MCP** sur les données foot | MCP : utiliser puis construire |
+| 7 | L'app | L'app existe déjà depuis le niveau 2 : on la **polit** (volets Analyste et Oracle), on la conteneurise avec **Docker** et on la **déploie** (Cloud Run) | |
 | 8 | Le mercato (carrière) | README, démo, LinkedIn, entretiens | |
 
 **Extension après le niveau 7 : l'agent scout/mercato** (option C, à ne pas oublier).
@@ -45,6 +51,14 @@ Ton : tutoiement, ludique, vocabulaire foot ou jeu vidéo bienvenu, mais concis.
 Branche transverse **n8n** (mode "jour de fatigue") : workflows d'automatisation, par exemple le bulletin du lundi sur Discord.
 
 **Choix des technos : au fur et à mesure**, quand le besoin arrive. dbt et l'architecture médaillon complète sont abandonnés (c'est de la data engineering, que Yanis pratique déjà au boulot) : DuckDB et du SQL simple suffisent. Piste envisagée : **GCP** au niveau 7 (Cloud Run pour l'app et n8n, Cloud Scheduler, BigQuery, éventuellement Claude via Vertex AI). Ne pas activer l'essai gratuit avant d'en avoir besoin, et poser une alerte de budget dès la création du compte.
+
+## Points de vigilance (revue du 2026-10-24)
+
+1. **Tranche verticale.** Une page Streamlit minimale dès le niveau 2, enrichie à chaque niveau. Il y a toujours quelque chose de montrable, et le niveau 7 sert à polir et déployer.
+2. **Contamination du backtest.** Claude connaît déjà les vainqueurs passés (Messi 2023, Rodri 2024, Dembélé 2025) : une bonne « prédiction » peut venir de sa mémoire, pas de son raisonnement. Parades à concevoir au niveau 3 : joueurs anonymisés (« Joueur A : 9 buts, LDC… »), comparaison avec et sans les noms, et poids particulier sur les éditions postérieures à la date de coupure du modèle utilisé.
+3. **Taille du jeu d'eval.** Quatre podiums, c'est trop peu pour mesurer. Évaluer sur le **top 30** de chaque édition (environ 120 joueurs classés) avec des métriques de classement.
+4. **Source de données.** Transfermarkt n'a pas d'API officielle, et le scraping est contraire à ses conditions d'utilisation : il sert seulement à la saisie manuelle du niveau 0. Au niveau 1, choisir une source qui couvre **gratuitement les saisons 2022/23 à 2025/26** (à vérifier avant de coder), en stats club. Le même principe point-in-time vaut pour les articles du RAG.
+5. **Briques ajoutées à la roadmap :** pytest (niveau 1), Pydantic (niveau 2), Docker (niveau 7).
 
 **Stack du boulot (Franciliane)** : GCP et BigQuery (Yanis connaît), migration vers l'open source et le cloud souverain (Apache Superset pour le reporting, stockage en France via S3NS). Privilégier ces technos quand elles conviennent au besoin, pour que le projet perso serve aussi au boulot (par exemple Langfuse, open source et auto-hébergeable, pour l'observabilité). Piste : un dashboard Superset sur les données du projet.
 
@@ -64,6 +78,7 @@ Branche transverse **n8n** (mode "jour de fatigue") : workflows d'automatisation
 - **La section "Prochaine session : contexte" est réécrite (pas complétée) avant chaque changement de session** : elle décrit toujours l'état actuel (mission suivante, environnement, points fragiles, points forts). Les points fragiles ou forts restent tant qu'ils sont d'actualité, et sont retirés quand Yanis les a corrigés. L'historique va dans "Historique des sessions", résumé à 3-5 lignes par session.
 - **Mettre à jour `PROGRESSION.md` au fil de l'eau**, sans attendre la fin de session : à chaque étape validée (cocher), à chaque décision technique, à chaque mission donnée.
 - **`PROGRESSION.md` reste court : c'est la mémoire de travail, pas un procès-verbal.** On n'y note que ce qui sert à décider la suite : missions, décisions, points fragiles ou forts, dette. Pas de ligne par question-réponse. L'historique tient en 3 à 5 lignes par session. Si un détail mérite d'être gardé, il va dans `HISTORIQUE.md` (archive, jamais lu au démarrage).
+- **`aide_memoire.md` : à compléter au fil de l'eau** avec les commandes et syntaxes réutilisables dans d'autres projets (une ligne ou un petit bloc, et un « à savoir » court). Pas de suivi de mission dedans. Ne pas y mettre une réponse que Yanis doit encore trouver : on l'ajoute une fois qu'il l'a trouvée.
 - **Mémoire : `PROGRESSION.md`, pas la mémoire automatique de Claude.** La mémoire automatique est stockée hors du repo, donc propre à chaque machine : elle ne suivrait pas Yanis entre ses deux PC.
 - **Conseiller proactivement le bon moment pour changer de session**, sans attendre que Yanis le demande. Signaux : mission ou étape validée, beaucoup d'allers-retours, changement de sujet, conversation longue (risque de résumé automatique et de perte de détails). Dire clairement : "C'est le bon moment pour ouvrir une nouvelle session."
 - **Passage de relais** : la mémoire passe par les fichiers, pas par un copier-coller. Avant de recommander une nouvelle session, mettre à jour `PROGRESSION.md` (section "Prochaine session : contexte" avec ce qu'il faut savoir, les points fragiles de Yanis et la mission exacte qui suit), puis rappeler à Yanis : nouvelle session dans ce dossier, puis taper "on reprend".
