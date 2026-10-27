@@ -8,11 +8,11 @@
 - [x] 0.1 étape 3 : `git init`, repo GitHub public, premier push
 - [x] 0.1 étape 4 : `main.py` qui classe 5 candidats au Ballon d'Or avec un score (sans code généré par l'IA). C'est en réalité l'édition **2026** (saison 25/26 plus la CDM), et non 2027 comme prévu au départ.
 - [x] 0.2 "Le transfert" : installer Python, VS Code et Git sur le laptop perso, cloner, ajouter un 6e candidat, push, puis pull sur le PC fixe
-- [ ] 0.3 "Le verdict" (**à partir du 26 octobre 2026**, date de la cérémonie) : comparer le classement de `main.py` au vrai résultat. C'est la première eval du projet : combien de joueurs du podium ont été trouvés ? Quels joueurs du top 10 réel manquent dans les candidats ? Qu'est-ce que le barème v0 a raté ?
+- [x] 0.3 "Le verdict" ✅ Vérité terrain : top 30 dans `donnees/ballon_dor_2026_top30.csv` (source ballondor.com, 27/10/2026, ex aequo à la 29e place). Podium trouvé 2/3 (Kane, Yamal). Comparé à l'ordre réel des 6 mêmes joueurs, la plus grosse erreur est Mbappé (6e chez nous, 2e en vrai, ses stats en sélection étaient ignorées). Rodri, Messi, Haaland, Olise et Fabián Ruiz, tous du top 10, n'étaient pas candidats.
 - [ ] Théorie : lire "Building effective agents" (Anthropic) et répondre aux 3 questions
-  1. Quelle différence entre un workflow et un agent ?
-  2. Les agents no-code du boulot, c'est plutôt l'un ou l'autre ?
-  3. Un pattern de l'article utile pour le Tracker ?
+  1. [x] Quelle différence entre un workflow et un agent ?
+  2. [x] Les agents no-code du boulot, c'est plutôt l'un ou l'autre ?
+  3. [ ] Un pattern de l'article utile pour le Tracker ? (et pour quelle partie précisément)
 - [x] Installer l'extension Claude Code dans VS Code
 - [ ] Boss fight du niveau 0
 
@@ -20,15 +20,17 @@
 
 ## Prochaine session : contexte
 
-- **Titre de la prochaine session :** `[0.3] Le verdict du Ballon d'Or 2026` à partir du 26/10, sinon `[0.T] Théorie : Building effective agents`.
-- **Mission suivante :** à partir du 26 octobre, **0.3 "Le verdict"** en priorité (une session courte : Yanis cherche le résultat officiel et le compare au classement de `main.py`, sans modifier le barème). Avant cette date, ou en mode téléphone : **la théorie** (lire "Building effective agents" et répondre aux 3 questions). Ensuite, le boss fight du niveau 0, puis le niveau 1 en mode copilote (expliquer d'abord comment se passe une mission dans ce mode).
+- **Titre de la prochaine session :** `[0.T] Théorie : question 3`, puis `[0.R] Revue globale et boss fight du niveau 0`.
+- **Mission suivante :** (1) **la question 3 de la théorie**, la seule qui reste (quel pattern de l'article pour le Tracker, et pour quelle partie), courte et faisable sur téléphone ; (2) la **première revue globale** (règle de `CLAUDE.md`), avec la décision sur la finalité ; (3) le **boss fight** du niveau 0 ; (4) le niveau 1 en mode copilote (expliquer d'abord comment se passe une mission dans ce mode).
+- **Décision en attente : la finalité de l'app** (`VISION.md`), à trancher pendant la revue globale. Décidé : aucun achat de points, seulement un abonnement premium. Idées en lice : la ligue de pronostics « Bats l'Oracle », l'assistant d'entraîneur (Claude propose de viser les entraîneurs amateurs, pas les pros), « L'arbitre des débats » (idée de Claude). Point clé : les niveaux 1 à 3 sont les mêmes quel que soit le choix, rien ne presse. Seule contrainte immédiate : au niveau 1, choisir une source avec des **données par match** (pas seulement des totaux de saison). **Devoir avant la revue :** 3 applis concurrentes que ses amis utilisent, et pour chacune, ce qu'elle ne fait pas.
+- **Acquis de la théorie :** dans un workflow, c'est le code qui fixe le chemin (les appels au LLM restent non déterministes) ; un agent, c'est le LLM qui tourne en boucle avec des outils et choisit lui-même. Le critère n'est pas « code ou no-code ». Un framework (LangGraph, Agent SDK) sert à construire les deux.
 - **Roadmap revue le 2026-10-24** (détail dans `CLAUDE.md`, section « Points de vigilance ») : une page Streamlit dès le niveau 2 (tranche verticale), la contamination du backtest à traiter au niveau 3 (joueurs anonymisés, top 30 de chaque édition), une source de données à choisir au niveau 1 (Transfermarkt n'a pas d'API), et trois briques ajoutées : pytest, Pydantic, Docker.
 - **Échauffement de la prochaine session de code (1 question max) :** la ligne 54 utilise toujours `BAREME_PERFORMANCES.get(...)`. Yanis a dit vouloir des crochets (fail fast), mais ne l'a pas fait. Question de la 0.2 restée ouverte, à poser au moment où on installe la première librairie : générer et utiliser un `requirements.txt`.
 - **État de `main.py` (commit `72cbf33`) :** classe `Joueur` (`score()`, `affiche_joueur()`), `BAREME_TITRES` (accès en `[t]`) et `BAREME_PERFORMANCES` en haut du fichier, `classement(joueurs: list[Joueur])` qui trie sur place et affiche. Formule : 1,2 × buts + passes + points des titres. Classement : Yamal 111,8 / Kane 99,2 / Dembélé 93 / Kvara 91,8 / Pedri 79,4 / Mbappé 57,4.
 - **Deux machines :** le PC fixe et le laptop sont opérationnels (le laptop a Python 3.13.7, Git 2.53, VS Code 1.140, et le compte GitHub YanisFr77 enregistré). Une session Claude vit sur une seule machine : pour changer de machine, push de `PROGRESSION.md`, pull, nouvelle session, puis « on reprend ».
 - **`aide_memoire.md` :** créé à la demande de Yanis, à compléter au fil des missions (règle dans `CLAUDE.md`).
 - **Données du niveau 0 :** saisie manuelle depuis **Transfermarkt**, saison 25/26, **stats en club uniquement** (la sélection compte seulement via les titres). Titres issus des pages palmarès. À partir du niveau 1, il faudra une source qui ait une API (à choisir).
-- **Dette notée pour le niveau 3 (evals) :** le barème v0 (écarts arbitraires, place de la CAN, titulaire et remplaçant comptés pareil, les titres collectifs qui écrasent les stats), les stats en sélection ignorées (Mbappé a marqué 10 buts au Mondial). Le backtest dira ce qui aide.
+- **Dette notée pour le niveau 3 (evals) :** le barème v0 (écarts arbitraires, place de la CAN, titulaire et remplaçant comptés pareil, les titres collectifs qui écrasent les stats), les stats en sélection ignorées (confirmé par le verdict : Mbappé). Leçons du verdict : (1) l'ensemble des candidats est lui-même une prédiction, donc partir des **30 nommés** (liste publiée avant le vote, donc point-in-time) ; (2) ne comparer que des rangs pris sur le même ensemble de joueurs ; (3) le critère n°1, « décisif et impressionnant », est absent : pistes de mesure, les buts dans les gros matchs ou décisifs pour le score et la note moyenne par match, plus la presse via le RAG ; (4) chaque juré vote pour un top 10 (15, 12, 10, 8, 7, 5, 4, 3, 2, 1 points).
 - **Points fragiles de Yanis à surveiller :**
   - Annonce « tout est fait » alors que c'est partiel, et saute des questions : relire le fichier avant de valider.
   - Reprend une suggestion d'une autre IA (Gemini) sans savoir l'expliquer : demander d'où vient l'idée quand un élément dépasse son niveau. A même collé une réponse d'IA (« Voici comment lui expliquer... ») à une question de contrôle : exiger une reformulation avec ses mots, ou un test dans le terminal.
@@ -69,3 +71,12 @@ Résumé de 3 à 5 lignes par session. Le détail des anciennes sessions est dan
 - Pedri ajouté en 6e candidat (commit `72cbf33`), 5e avec 79,4 pts. La boucle laptop → GitHub → PC fixe fonctionne.
 - `aide_memoire.md` créé. Nouvelle règle dans `CLAUDE.md` : 1 ou 2 questions par message au maximum.
 - Revue globale du projet à la demande de Yanis. 4 propositions intégrées dans `CLAUDE.md` : tranche verticale (Streamlit dès le niveau 2), contamination du backtest et top 30, choix d'une source de données avec API, et ajout de pytest, Pydantic et Docker. Découverte : `main.py` prédit en fait l'édition **2026**, dont la cérémonie a lieu le 26/10, d'où la mission 0.3 « Le verdict ».
+
+### 2026-10-24/25 : Théorie et vision produit
+- « Building effective agents », lu en français (traduction du navigateur, plus un lexique). Questions 1 et 2 validées après correction (« déterministe » trop fort, critère « code / no-code » faux). Notion de framework expliquée. Il reste la question 3.
+- Aparté de Yanis sur la finalité de l'app (pronostics avec des points, équipe en 5 contre 5, simulation de carrière, premium, communautés), avec la contrainte halal. Revue complète dans `VISION.md` ; la décision reste à prendre.
+- Nouvelle règle dans `CLAUDE.md` : une revue globale du projet à chaque fin de niveau.
+
+### 2026-10-27 : Le verdict (0.3 validée ✅)
+- Ballon d'Or 2026 : Kane, Mbappé, Yamal, Rodri, Messi. Podium trouvé 2/3. Top 30 officiel enregistré dans `donnees/`.
+- Bonne analyse de Yanis : il a repéré seul le biais de sélection (6 candidats contre 30 nommés), et passé les 3 critères officiels en revue avec justesse. Correction : chaque juré vote pour un top 10, pas pour un top 30.

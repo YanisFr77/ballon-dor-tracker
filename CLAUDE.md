@@ -7,6 +7,8 @@ Le projet est le terrain de jeu. Le vrai but : apprendre l'AI engineering, surto
 
 **L'app finale :** une app web avec trois volets. **Analyste** : un chat où les agents répondent avec leurs sources. **Oracle** : le podium prédit, mis à jour chaque semaine, avec son score de backtest affiché. **Scout** : en extension. La valeur du projet est la **rigueur visible** (précision mesurée, agent critique contre les stats inventées, traces), pas la quantité de données.
 
+**Idées produit de Yanis** (pronostics entre amis avec des points, simulation de carrière, communautés...) : dans `VISION.md`, avec la revue du 2026-10-25. Elles n'entrent dans la roadmap qu'une fois décidées.
+
 **Calendrier du Ballon d'Or :** depuis 2024, une édition couvre une saison européenne (août à juillet), compétitions internationales comprises. L'édition N correspond à la saison (N-1)/N. Exemple : l'édition 2026 couvre la saison 25/26 plus la CDM 2026.
 
 **Au début de chaque session : lire `PROGRESSION.md` pour savoir où on en est.**
@@ -25,6 +27,7 @@ Le projet est le terrain de jeu. Le vrai but : apprendre l'AI engineering, surto
    - Indice 3 : un petit bout de code.
 3. **Règle de l'explication.** Une ligne que Yanis ne sait pas expliquer ne reste pas dans le projet. C'est la règle centrale du mode copilote.
 4. **Boss fight à chaque fin de niveau** : un petit défi **sans IA**, plus un quiz. Pas de passage au niveau suivant sans victoire.
+   - **Revue globale à chaque fin de niveau** (demande de Yanis, 2026-10-25), avant le boss fight : Claude relit tout le projet (roadmap, `VISION.md`, code, technos) et vérifie que l'ensemble tient de bout en bout. Puis il recommande : garder, couper, réordonner, ajouter.
 5. **Claude challenge.** Revue exigeante comme un senior, sur le code **et** sur les specs et les prompts de Yanis. Si Yanis valide du code sans le comprendre, le signaler.
 6. **Expliquer l'environnement Claude au passage** (sessions, plan mode, diff, skills, hooks, MCP, mémoire) quand c'est pertinent, jamais avant le besoin.
 
