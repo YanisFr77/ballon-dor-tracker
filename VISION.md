@@ -93,6 +93,17 @@ Entre potes, sur WhatsApp ou Discord : « Mbappé a marqué plus que Haaland en 
 - **Technos couvertes** : agent stats (SQL sur DuckDB), RAG, critique, MCP, evals. C'est le cœur de la roadmap, sans rien ajouter.
 - Ça se marie bien avec « Bats l'Oracle » : une même app de divertissement foot dont l'IA **ne ment jamais sur les chiffres**.
 
+## Revue globale du niveau 0 (2026-10-28)
+
+**Devoir de Yanis : 3 applis utilisées par ses amis, et ce qu'elles ne font pas.**
+- **OneFootball** : scores en direct, effectifs, actualités. Pas d'analyse, pas d'IA.
+- **Mon Petit Prono** : pronostics halal entre amis, mais rien de plus. Surtout utilisé en grande communauté et pour les grands événements.
+- **Sorare** : fantasy (une équipe de cartes de joueurs, des points, des matchs contre des amis). Yanis ne l'a jamais utilisé. Remarque de Claude : les cartes s'achètent avec de l'argent réel et rapportent des récompenses, c'est exactement la ligne rouge de la monétisation.
+
+**Le trou commun aux trois : aucune IA qui pronostique avec un bilan mesuré, ni qui explique avec ses sources.** « Bats l'Oracle », c'est Mon Petit Prono avec un adversaire IA dont la précision est affichée, et l'Analyste pour expliquer. Le Ballon d'Or (chaque semaine) et les matchs (chaque week-end) donnent une raison de revenir hors des grands événements.
+
+**Recommandation de Claude :** couper l'IA d'entraîneur (autres utilisateurs, autres données, pas de vérité terrain) ; fondre l'arbitre des débats dans le volet Analyste (mêmes agents, même critique) ; garder « Bats l'Oracle » comme finalité. Décision de Yanis : en attente.
+
 ## Ce qui ne change pas, quel que soit le choix
 
 Les niveaux 1 à 3 (données, LLM, evals) sont les mêmes pour toutes les idées : rien ne presse pour décider. Seule contrainte dès le niveau 1 : une source avec des **données par match** (date, adversaire, minutes, buts), pas seulement des totaux de saison. Toutes les idées en ont besoin.
