@@ -17,7 +17,7 @@
 - [x] Revue globale du niveau 0 (2026-10-28) : niveaux 5 et 6 inversés (le RAG avant l'orchestration, sinon l'agent actu n'a rien à lire) ; la source du niveau 1 doit couvrir les **sélections** ; `main.py` devient la **baseline** du backtest. Finalité : voir `VISION.md`, décision en attente.
 - [ ] Boss fight du niveau 0
   - [ ] Quiz (2026-10-28, téléphone) : **3,5/5, perdu d'un demi-point** (il fallait 4). Q1 KeyError pendant le `sort` ✅, Q2 git sans réseau ½ (n'a pas répondu à la partie hors ligne, malgré deux relances), Q3 annotations ignorées ✅, Q4 « routing » au lieu d'evaluator-optimizer ½ (garde-fou juste), Q5 fuite via le RAG ½ (a oublié la mémoire du LLM). **Revanche** au prochain « on reprend » : 3 nouvelles questions sur ces notions, victoire à 2,5/3.
-  - [ ] Défi « Le verdict en code » : énoncé dans `boss_fight_0.md` (laptop, train, sans IA). Réponses attendues à vérifier en lançant son code : rangs réels parmi les 6 (Pedri hors top 30, donc 6e), somme des écarts = 10.
+  - [ ] Défi « Le verdict en code » : énoncé dans `boss_fight_0.md` (laptop, train, sans IA). Claude recalcule lui-même les réponses attendues depuis le CSV (elles ne sont pas écrites ici : Yanis lit ce fichier).
 
 **Délai :** fin de la première semaine en entreprise.
 
