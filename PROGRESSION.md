@@ -25,7 +25,7 @@
 - **Décision en attente : la finalité de l'app** (`VISION.md`), à trancher pendant la revue globale. Décidé : aucun achat de points, seulement un abonnement premium. Idées en lice : la ligue de pronostics « Bats l'Oracle », l'assistant d'entraîneur (Claude propose de viser les entraîneurs amateurs, pas les pros), « L'arbitre des débats » (idée de Claude). Point clé : les niveaux 1 à 3 sont les mêmes quel que soit le choix, rien ne presse. Seule contrainte immédiate : au niveau 1, choisir une source avec des **données par match** (pas seulement des totaux de saison). **Devoir avant la revue :** 3 applis concurrentes que ses amis utilisent, et pour chacune, ce qu'elle ne fait pas.
 - **Acquis de la théorie :** dans un workflow, c'est le code qui fixe le chemin (les appels au LLM restent non déterministes) ; un agent, c'est le LLM qui tourne en boucle avec des outils et choisit lui-même. Le critère n'est pas « code ou no-code ». Un framework (LangGraph, Agent SDK) sert à construire les deux. Patterns pour le Tracker : **routing** pour une question simple (« buts de Kane » → agent stats sur DuckDB, pas le web), **orchestrator-workers** quand les sous-tâches ne sont pas prévisibles (« Kane ou Mbappé pour le Ballon d'Or ? » → stats + actu RAG, synthèse par l'orchestrateur, critique avant la réponse). Les critères du Ballon d'Or vont dans le prompt, pas dans une recherche.
 - **Roadmap revue le 2026-10-24** (détail dans `CLAUDE.md`, section « Points de vigilance ») : une page Streamlit dès le niveau 2 (tranche verticale), la contamination du backtest à traiter au niveau 3 (joueurs anonymisés, top 30 de chaque édition), une source de données à choisir au niveau 1 (Transfermarkt n'a pas d'API), et trois briques ajoutées : pytest, Pydantic, Docker.
-- **Échauffement de la prochaine session de code (1 question max) :** la ligne 54 utilise toujours `BAREME_PERFORMANCES.get(...)`. Yanis a dit vouloir des crochets (fail fast), mais ne l'a pas fait. Question de la 0.2 restée ouverte, à poser au moment où on installe la première librairie : générer et utiliser un `requirements.txt`.
+- **Petite correction à faire au début de la prochaine session de code (une tâche, pas une question) :** la ligne 54 utilise toujours `BAREME_PERFORMANCES.get(...)`. Yanis a dit vouloir des crochets (fail fast), mais ne l'a pas fait. Question de la 0.2 restée ouverte, à poser au moment où on installe la première librairie : générer et utiliser un `requirements.txt`.
 - **État de `main.py` (commit `72cbf33`) :** classe `Joueur` (`score()`, `affiche_joueur()`), `BAREME_TITRES` (accès en `[t]`) et `BAREME_PERFORMANCES` en haut du fichier, `classement(joueurs: list[Joueur])` qui trie sur place et affiche. Formule : 1,2 × buts + passes + points des titres. Classement : Yamal 111,8 / Kane 99,2 / Dembélé 93 / Kvara 91,8 / Pedri 79,4 / Mbappé 57,4.
 - **Deux machines :** le PC fixe et le laptop sont opérationnels (le laptop a Python 3.13.7, Git 2.53, VS Code 1.140, et le compte GitHub YanisFr77 enregistré). Une session Claude vit sur une seule machine : pour changer de machine, push de `PROGRESSION.md`, pull, nouvelle session, puis « on reprend ».
 - **`aide_memoire.md` :** créé à la demande de Yanis, à compléter au fil des missions (règle dans `CLAUDE.md`).
@@ -45,6 +45,18 @@
   - Perd patience quand les questions s'empilent (règle ajoutée dans `CLAUDE.md` : 1 ou 2 questions par message, seulement celles qui bloquent).
 - **Points forts :** se débloque seul en lisant les messages d'erreur. Honnête quand on lui demande d'où vient une idée. Pose de bonnes questions de méthode (contrat, mémoire du projet, aide-mémoire). Teste dans le terminal quand on le lui demande. Bon pronostic de classement.
 - **Environnement :** Windows, PowerShell, Python 3.13.14 (Microsoft Store). Activer le venv avec `.\.venv\Scripts\Activate.ps1`. VS Code avec l'extension Claude Code et l'interpréteur du venv sélectionné. Utiliser le panneau Terminal de l'app, ou coller la sortie du terminal VS Code. Git : branche `main`, remote `origin` = github.com/YanisFr77/ballon-dor-tracker, authentification via Git Credential Manager. Identité : gmail en local pour ce repo, email de l'université en global.
+
+## Révisions
+
+Une question flash au « on reprend » sur une notion dont la date est passée (règle dans `CLAUDE.md`). Réussie : J+7, puis J+21, puis la notion sort. Oubliée : J+2.
+
+| Notion | Prochaine révision |
+|---|---|
+| Les 5 patterns de « Building effective agents » (noms + quand les utiliser) | 2026-10-30 |
+| Workflow contre agent (qui choisit le chemin ?) | 2026-11-01 |
+| Fail fast : `d[k]` contre `d.get(k)` | 2026-11-03 |
+| `.env` contre `.venv` | 2026-11-05 |
+| `x = a,` : qu'est-ce que ça crée ? | 2026-11-07 |
 
 ## Historique des sessions
 
