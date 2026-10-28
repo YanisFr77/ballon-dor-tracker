@@ -1,6 +1,6 @@
 # Aide-mémoire
 
-Commandes et syntaxes réutilisables dans n'importe quel projet. Complété au fil des missions.
+Commandes, syntaxes et concepts réutilisables dans n'importe quel projet. Complété au fil des missions.
 Environnement : Windows et PowerShell, sauf mention contraire.
 
 ## PowerShell
@@ -91,6 +91,10 @@ git ls-remote origin           # voir ce qui est vraiment sur GitHub
 - Ne pas modifier le même fichier sur deux machines sans pull/push entre les deux : risque de conflit.
 - Git cherche `.git` dans le dossier courant puis dans les dossiers parents.
 
+### Pull Request (PR)
+
+Une demande de fusion d'une branche dans une autre (souvent vers `main`), faite sur GitHub. On relit le diff, puis on clique sur « Merge ». Après la fusion, `git pull` sur chaque machine pour récupérer `main`.
+
 ## Python
 
 ### Classe
@@ -146,3 +150,19 @@ print(f"{i+1}. {j.nom} : {j.score()} pts")
 ```python
 x = [1, 2],      # ([1, 2],) : un tuple d'UN SEUL élément, pas une liste
 ```
+
+## Agents et LLM (concepts)
+
+Source : « Building effective agents » (Anthropic).
+
+- **Workflow** : le **code** fixe le chemin. **Agent** : le **LLM** tourne en boucle avec des outils et choisit lui-même la suite.
+- À savoir : dans un workflow, le chemin est fixe, mais chaque appel au LLM reste **non déterministe**. Le critère n'est pas « code ou no-code ». Un framework (LangGraph, Agent SDK) sert à construire les deux.
+- Règle d'or : commencer par **le plus simple qui marche**, et n'ajouter de l'autonomie que si elle fait gagner en eval.
+
+| Pattern | Principe | Quand l'utiliser |
+|---|---|---|
+| Prompt chaining | Des étapes en file indienne : chaque appel reprend la sortie du précédent | Une tâche découpable en étapes **fixes** |
+| Routing | On classe l'entrée, puis on l'envoie vers le bon traitement | Des types de demandes bien distincts (ex. une question de stats → l'agent stats) |
+| Parallelization | Des sous-tâches en parallèle (*sectioning*), ou la même tâche plusieurs fois pour voter (*voting*) | Gagner du temps, ou de la fiabilité par le vote |
+| Orchestrator-workers | Un LLM découpe la tâche et la distribue à des workers, puis fait la synthèse | Les sous-tâches **ne sont pas prévisibles** à l'avance (ex. « Kane ou Mbappé ? » → stats + actu) |
+| Evaluator-optimizer | Un LLM produit, un autre évalue et renvoie un retour, en boucle | Il existe des critères clairs pour juger, et des retours qui améliorent vraiment le résultat |
