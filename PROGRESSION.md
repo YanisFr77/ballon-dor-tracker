@@ -15,18 +15,20 @@
   3. [x] Un pattern de l'article utile pour le Tracker ? (et pour quelle partie précisément)
 - [x] Installer l'extension Claude Code dans VS Code
 - [x] Revue globale du niveau 0 (2026-10-28) : niveaux 5 et 6 inversés (le RAG avant l'orchestration, sinon l'agent actu n'a rien à lire) ; la source du niveau 1 doit couvrir les **sélections** ; `main.py` devient la **baseline** du backtest. Finalité : voir `VISION.md`, décision en attente.
-- [ ] Boss fight du niveau 0 : quiz (téléphone), puis défi sans IA (laptop, dans le train)
+- [ ] Boss fight du niveau 0
+  - [ ] Quiz (2026-10-28, téléphone) : **3,5/5, perdu d'un demi-point** (il fallait 4). Q1 KeyError pendant le `sort` ✅, Q2 git sans réseau ½ (n'a pas répondu à la partie hors ligne, malgré deux relances), Q3 annotations ignorées ✅, Q4 « routing » au lieu d'evaluator-optimizer ½ (garde-fou juste), Q5 fuite via le RAG ½ (a oublié la mémoire du LLM). **Revanche** au prochain « on reprend » : 3 nouvelles questions sur ces notions, victoire à 2,5/3.
+  - [ ] Défi « Le verdict en code » : énoncé dans `boss_fight_0.md` (laptop, train, sans IA). Réponses attendues à vérifier en lançant son code : rangs réels parmi les 6 (Pedri hors top 30, donc 6e), somme des écarts = 10.
 
 **Délai :** fin de la première semaine en entreprise.
 
 ## Prochaine session : contexte
 
-- **Titre de la prochaine session :** `[0.R] Revue globale et boss fight du niveau 0`.
-- **Mission suivante :** (1) la **première revue globale** (règle de `CLAUDE.md`), avec la décision sur la finalité ; (2) le **boss fight** du niveau 0 ; (3) le niveau 1 en mode copilote (expliquer d'abord comment se passe une mission dans ce mode).
+- **Titre de la prochaine session :** `[0.B] Boss fight : verdict du défi et revanche du quiz`.
+- **Mission suivante :** (1) vérifier le **défi** de `boss_fight_0.md` (lancer `main.py`, interroger sur une ligne au hasard, relire le message de commit) ; (2) la **revanche du quiz** ; (3) faire **trancher la finalité** (recommandation dans `VISION.md`, section « Revue globale du niveau 0 ») ; (4) si victoire, le niveau 1 en mode copilote (expliquer d'abord comment se passe une mission dans ce mode). La revue globale est faite.
 - **Décision en attente : la finalité de l'app** (`VISION.md`), à trancher pendant la revue globale. Décidé : aucun achat de points, seulement un abonnement premium. Idées en lice : la ligue de pronostics « Bats l'Oracle », l'assistant d'entraîneur (Claude propose de viser les entraîneurs amateurs, pas les pros), « L'arbitre des débats » (idée de Claude). Point clé : les niveaux 1 à 3 sont les mêmes quel que soit le choix, rien ne presse. Seule contrainte immédiate : au niveau 1, choisir une source avec des **données par match**, en club et en sélection. Devoir rendu le 2026-10-28 (OneFootball, Mon Petit Prono, Sorare) : recommandation de Claude dans `VISION.md` (garder « Bats l'Oracle », couper l'IA d'entraîneur, fondre l'arbitre des débats dans l'Analyste).
 - **Acquis de la théorie :** dans un workflow, c'est le code qui fixe le chemin (les appels au LLM restent non déterministes) ; un agent, c'est le LLM qui tourne en boucle avec des outils et choisit lui-même. Le critère n'est pas « code ou no-code ». Un framework (LangGraph, Agent SDK) sert à construire les deux. Patterns pour le Tracker : **routing** pour une question simple (« buts de Kane » → agent stats sur DuckDB, pas le web), **orchestrator-workers** quand les sous-tâches ne sont pas prévisibles (« Kane ou Mbappé pour le Ballon d'Or ? » → stats + actu RAG, synthèse par l'orchestrateur, critique avant la réponse). Les critères du Ballon d'Or vont dans le prompt, pas dans une recherche.
 - **Roadmap revue le 2026-10-24** (détail dans `CLAUDE.md`, section « Points de vigilance ») : une page Streamlit dès le niveau 2 (tranche verticale), la contamination du backtest à traiter au niveau 3 (joueurs anonymisés, top 30 de chaque édition), une source de données à choisir au niveau 1 (Transfermarkt n'a pas d'API), et trois briques ajoutées : pytest, Pydantic, Docker.
-- **Petite correction à faire au début de la prochaine session de code (une tâche, pas une question) :** la ligne 54 utilise toujours `BAREME_PERFORMANCES.get(...)`. Yanis a dit vouloir des crochets (fail fast), mais ne l'a pas fait. Question de la 0.2 restée ouverte, à poser au moment où on installe la première librairie : générer et utiliser un `requirements.txt`.
+- **La correction de la ligne 54** (`.get` → crochets) fait partie du défi : vérifier qu'elle est faite. Question de la 0.2 restée ouverte, à poser au moment où on installe la première librairie : générer et utiliser un `requirements.txt`.
 - **État de `main.py` (commit `72cbf33`) :** classe `Joueur` (`score()`, `affiche_joueur()`), `BAREME_TITRES` (accès en `[t]`) et `BAREME_PERFORMANCES` en haut du fichier, `classement(joueurs: list[Joueur])` qui trie sur place et affiche. Formule : 1,2 × buts + passes + points des titres. Classement : Yamal 111,8 / Kane 99,2 / Dembélé 93 / Kvara 91,8 / Pedri 79,4 / Mbappé 57,4.
 - **Deux machines :** le PC fixe et le laptop sont opérationnels (le laptop a Python 3.13.7, Git 2.53, VS Code 1.140, et le compte GitHub YanisFr77 enregistré). Une session Claude vit sur une seule machine : pour changer de machine, push de `PROGRESSION.md`, pull, nouvelle session, puis « on reprend ».
 - **`aide_memoire.md` :** créé à la demande de Yanis, à compléter au fil des missions (règle dans `CLAUDE.md`).
@@ -40,11 +42,12 @@
   - Confusion `.env` (secrets) / `.venv` (dossier du venv).
   - Lance des commandes sans vérifier ce qu'elles ciblent. Réflexes Linux dans PowerShell.
   - Mélange les rôles de Git et du venv.
-  - Prouve parfois le mauvais point (question 3 : a choisi orchestrator-workers avec un exemple à un seul worker). Met un mauvais nom sur une bonne idée (a appelé « prompt chaining » un orchestrator-workers). Reprend le mot « déterministe » pour un workflow malgré la correction.
+  - Saute des sous-questions (quiz Q2 : trois fois de suite, rien sur la partie « sans réseau »). Lui faire répondre à **chaque** partie.
+  - Prouve parfois le mauvais point (question 3 : a choisi orchestrator-workers avec un exemple à un seul worker). Met un mauvais nom sur une bonne idée (a appelé « prompt chaining » un orchestrator-workers). Reprend le mot « déterministe » pour un workflow malgré la correction. Au quiz : « routing » pour une boucle producteur/critique (c'est evaluator-optimizer).
   - Messages de commit irréguliers : `d1534ad` et `72cbf33` sont bien formulés, `2714001` non.
   - Annotations : a cru que l'interpréteur les exploite (ce sont l'éditeur et mypy qui s'en servent).
   - Perd patience quand les questions s'empilent (règle ajoutée dans `CLAUDE.md` : 1 ou 2 questions par message, seulement celles qui bloquent).
-- **Points forts :** se débloque seul en lisant les messages d'erreur. Honnête quand on lui demande d'où vient une idée. Pose de bonnes questions de méthode (contrat, mémoire du projet, aide-mémoire). Teste dans le terminal quand on le lui demande. Bon pronostic de classement.
+- **Points forts :** se débloque seul en lisant les messages d'erreur. Honnête quand on lui demande d'où vient une idée. Pose de bonnes questions de méthode (contrat, mémoire du projet, aide-mémoire). Teste dans le terminal quand on le lui demande. Bon pronostic de classement. Au quiz : a demandé de couper les suggestions de prompt qui l'aidaient trop ; a trouvé seul une fuite réelle (la vérité terrain du projet ou des articles d'après le vote, lisibles par l'Oracle).
 - **Environnement :** Windows, PowerShell, Python 3.13.14 (Microsoft Store). Activer le venv avec `.\.venv\Scripts\Activate.ps1`. VS Code avec l'extension Claude Code et l'interpréteur du venv sélectionné. Utiliser le panneau Terminal de l'app, ou coller la sortie du terminal VS Code. Git : branche `main`, remote `origin` = github.com/YanisFr77/ballon-dor-tracker, authentification via Git Credential Manager. Identité : gmail en local pour ce repo, email de l'université en global.
 
 ## Révisions
@@ -58,6 +61,8 @@ Une question flash au « on reprend » sur une notion dont la date est passée (
 | Fail fast : `d[k]` contre `d.get(k)` | 2026-11-03 |
 | `.env` contre `.venv` | 2026-11-05 |
 | `x = a,` : qu'est-ce que ça crée ? | 2026-11-07 |
+| Git sans réseau : qu'est-ce qui marche, qu'est-ce qui échoue ? | 2026-10-30 |
+| Contamination par la mémoire du LLM, et ses parades | 2026-10-30 |
 
 ## Historique des sessions
 
