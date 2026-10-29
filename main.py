@@ -38,14 +38,15 @@ BAREME_PERFORMANCES = {
     "passe_d": 1.0,
 
 }
-# Je dois faire un classement sur les 6 joueurs sélectionnés donc sur 6 et non 30.
+# Je dois faire un classement sur les 7 joueurs sélectionnés donc sur 7 et non 30. J'ai ajouté Olisé après le verdict. Pedri ne configure pas dans le top 30, donc il est dernier de notre classement
 RANG_REEL = {
     "Lamine Yamal": 3,
     "Harry Kane": 1,
     "Ousmane Dembélé": 5,
     "Khvicha Kvaratskhelia": 4,
     "Kylian Mbappé": 2,
-    "Michael Olisé":  6
+    "Michael Olisé":  6,
+    "Pedri": 7
 }
 
 class Joueur:
@@ -79,7 +80,6 @@ def verdict(joueurs: list[Joueur]):
         ecart = abs(RANG_REEL[joueurs[i].nom] - (i+1))
         ecarts.append(ecart)
         print(f"{joueurs[i].nom} : prédit {i+1}, réel {RANG_REEL[joueurs[i].nom]}, écart {ecart}")
-        ecart = 0
     return sum(ecarts)
 
 
@@ -88,10 +88,10 @@ kane = Joueur(nom="Harry Kane", club="FC Bayern", buts=61, passes_d=7,titres_maj
 dembele = Joueur(nom="Ousmane Dembélé", club="Paris Saint-Germain", buts=20, passes_d=11, titres_majeurs=["Ligue 1", "LDC", "Supercoupe UEFA", "Coupe Intercontinentale", "Trophée des Champions"])
 kvara = Joueur(nom="Khvicha Kvaratskhelia", club="Paris Saint-Germain", buts=19, passes_d=11, titres_majeurs=["Ligue 1", "LDC", "Supercoupe UEFA", "Coupe Intercontinentale", "Trophée des Champions"])
 mbappe = Joueur(nom="Kylian Mbappé", club="Real Madrid", buts=42, passes_d=7, titres_majeurs=[])
-# on remplace perdi par un joueur du top 30; pedri = Joueur(nom="Pedri", club="FC Barcelona", buts=2, passes_d=12, titres_majeurs=["Supercoupe d'Espagne", "La Liga", "CDM"])
+pedri = Joueur(nom="Pedri", club="FC Barcelona", buts=2, passes_d=12, titres_majeurs=["Supercoupe d'Espagne", "La Liga", "CDM"])
 olise = Joueur("Michael Olisé", "FC Bayern", 22, 26, ["Bundesliga", "Coupe d'Allemagne", "DFL-Supercup"] )
 
-candidats = [yamal, kane, dembele, mbappe, kvara, olise]
+candidats = [yamal, kane, dembele, mbappe, kvara, olise, pedri]
 
 classement(candidats)
 s = verdict(candidats)
