@@ -38,6 +38,15 @@ BAREME_PERFORMANCES = {
     "passe_d": 1.0,
 
 }
+# Je dois faire un classement sur les 6 joueurs sélectionnés donc sur 6 et non 30.
+RANG_REEL = {
+    "Lamine Yamal": 3,
+    "Harry Kane": 1,
+    "Ousmane Dembélé": 5,
+    "Khvicha Kvaratskhelia": 4,
+    "Kylian Mbappé": 2,
+    "Michael Olisé":  6
+}
 
 class Joueur:
     def __init__(self, nom: str, club: str, buts: int, passes_d: int,  titres_majeurs: list[str]):
@@ -51,7 +60,7 @@ class Joueur:
         print(f"Joueur(nom={self.nom}, club={self.club}, buts={self.buts}, passes_d={self.passes_d}, titres_remporte={self.titres_majeurs})")
 
     def score(self):
-        score_performance = self.buts * BAREME_PERFORMANCES.get("but") + self.passes_d * BAREME_PERFORMANCES.get("passe_d")
+        score_performance = self.buts * BAREME_PERFORMANCES["but"] + self.passes_d * BAREME_PERFORMANCES["passe_d"]
         score_titres = 0
         for t in self.titres_majeurs:
             score_titres += BAREME_TITRES[t]
@@ -59,8 +68,19 @@ class Joueur:
 
 def classement(joueurs: list[Joueur]):
     joueurs.sort(key=Joueur.score, reverse=True)
-    for i in range (0, len(joueurs)):
-        print(f"{i+1}. {joueurs[i].nom} ({joueurs[i].club}) : {joueurs[i].score()} pts")
+    # for i in range (0, len(joueurs)):
+        # print(f"{i+1}. {joueurs[i].nom} ({joueurs[i].club}) : {joueurs[i].score()} pts")
+    return joueurs
+
+def verdict(joueurs: list[Joueur]):
+    ecarts = []
+    for i in range (0 ,len(joueurs)):
+        # rang prédit est simplement i car joueurs.sort(key=Joueur.score, reverse=True) trie le tableau joueur
+        ecart = abs(RANG_REEL[joueurs[i].nom] - (i+1))
+        ecarts.append(ecart)
+        print(f"{joueurs[i].nom} : prédit {i+1}, réel {RANG_REEL[joueurs[i].nom]}, écart {ecart}")
+        ecart = 0
+    return sum(ecarts)
 
 
 yamal = Joueur(nom="Lamine Yamal", club="FC Barcelona", buts=24, passes_d=18, titres_majeurs=["Supercoupe d'Espagne", "La Liga", "CDM"])
@@ -68,9 +88,11 @@ kane = Joueur(nom="Harry Kane", club="FC Bayern", buts=61, passes_d=7,titres_maj
 dembele = Joueur(nom="Ousmane Dembélé", club="Paris Saint-Germain", buts=20, passes_d=11, titres_majeurs=["Ligue 1", "LDC", "Supercoupe UEFA", "Coupe Intercontinentale", "Trophée des Champions"])
 kvara = Joueur(nom="Khvicha Kvaratskhelia", club="Paris Saint-Germain", buts=19, passes_d=11, titres_majeurs=["Ligue 1", "LDC", "Supercoupe UEFA", "Coupe Intercontinentale", "Trophée des Champions"])
 mbappe = Joueur(nom="Kylian Mbappé", club="Real Madrid", buts=42, passes_d=7, titres_majeurs=[])
-pedri = Joueur(nom="Pedri", club="FC Barcelona", buts=2, passes_d=12, titres_majeurs=["Supercoupe d'Espagne", "La Liga", "CDM"])
+# on remplace perdi par un joueur du top 30; pedri = Joueur(nom="Pedri", club="FC Barcelona", buts=2, passes_d=12, titres_majeurs=["Supercoupe d'Espagne", "La Liga", "CDM"])
+olise = Joueur("Michael Olisé", "FC Bayern", 22, 26, ["Bundesliga", "Coupe d'Allemagne", "DFL-Supercup"] )
 
-
-candidats = [yamal, kane, dembele, mbappe, kvara, pedri]
+candidats = [yamal, kane, dembele, mbappe, kvara, olise]
 
 classement(candidats)
+s = verdict(candidats)
+print(f"Première métrique d'eval 🎯 : {s}")

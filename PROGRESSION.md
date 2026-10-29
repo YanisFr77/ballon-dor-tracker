@@ -16,15 +16,15 @@
 - [x] Installer l'extension Claude Code dans VS Code
 - [x] Revue globale du niveau 0 (2026-10-28) : niveaux 5 et 6 inversés (le RAG avant l'orchestration, sinon l'agent actu n'a rien à lire) ; la source du niveau 1 doit couvrir les **sélections** ; `main.py` devient la **baseline** du backtest. Finalité : voir `VISION.md`, décision en attente.
 - [ ] Boss fight du niveau 0
-  - [ ] Quiz (2026-10-28, téléphone) : **3,5/5, perdu d'un demi-point** (il fallait 4). Q1 KeyError pendant le `sort` ✅, Q2 git sans réseau ½ (n'a pas répondu à la partie hors ligne, malgré deux relances), Q3 annotations ignorées ✅, Q4 « routing » au lieu d'evaluator-optimizer ½ (garde-fou juste), Q5 fuite via le RAG ½ (a oublié la mémoire du LLM). **Revanche** au prochain « on reprend » : 3 nouvelles questions sur ces notions, victoire à 2,5/3.
-  - [ ] Défi « Le verdict en code » : énoncé dans `boss_fight_0.md` (laptop, train, sans IA). Claude recalcule lui-même les réponses attendues depuis le CSV (elles ne sont pas écrites ici : Yanis lit ce fichier).
+  - [ ] Quiz (2026-10-28, téléphone) : **3,5/5, perdu d'un demi-point** (il fallait 4). Q1 KeyError pendant le `sort` ✅, Q2 git sans réseau ½ (n'a pas répondu à la partie hors ligne, malgré deux relances), Q3 annotations ignorées ✅, Q4 « routing » au lieu d'evaluator-optimizer ½ (garde-fou juste), Q5 fuite via le RAG ½ (a oublié la mémoire du LLM). Revanche du 2026-10-29 (PC) : **1,5/3, perdue**. Git ½ (`git log` d'abord juste, puis changé en « ne marche pas hors ligne »), patterns ½ (cas A : orchestrator-workers au lieu de routing, indice « le LLM choisit » trop vague ; cas B juste), contamination ½ (mémoire du LLM ✅, anonymisation ✅, 2e parade hors sujet). **Nouvelle revanche** après le défi, sur les mêmes notions.
+  - [ ] Défi « Le verdict en code » : **pas encore fait** (2026-10-29). Énoncé dans `boss_fight_0.md` (laptop, train, sans IA). Claude recalcule lui-même les réponses attendues depuis le CSV (elles ne sont pas écrites ici : Yanis lit ce fichier).
 
 **Délai :** fin de la première semaine en entreprise.
 
 ## Prochaine session : contexte
 
-- **Titre de la prochaine session :** `[0.B] Boss fight : verdict du défi et revanche du quiz`.
-- **Mission suivante :** (1) vérifier le **défi** de `boss_fight_0.md` (lancer `main.py`, interroger sur une ligne au hasard, relire le message de commit) ; (2) la **revanche du quiz** ; (3) faire **trancher la finalité** (recommandation dans `VISION.md`, section « Revue globale du niveau 0 ») ; (4) si victoire, le niveau 1 en mode copilote (expliquer d'abord comment se passe une mission dans ce mode). La revue globale est faite.
+- **Titre de la prochaine session :** `[0.B] Boss fight : verdict du défi et revanche n°2`.
+- **Mission suivante :** (1) Yanis fait le **défi** de `boss_fight_0.md` dans le train, puis push ; Claude le vérifie (lancer `main.py`, interroger sur une ligne au hasard, relire le message de commit) ; (2) **revanche n°2 du quiz** (3 questions nouvelles sur Git hors ligne, routing contre orchestrator-workers, parades à la contamination ; victoire à 2,5/3) ; (3) faire **trancher la finalité** (recommandation dans `VISION.md`, section « Revue globale du niveau 0 ») ; (4) si victoire, le niveau 1 en mode copilote (expliquer d'abord comment se passe une mission dans ce mode). La revue globale est faite.
 - **Décision en attente : la finalité de l'app** (`VISION.md`), à trancher pendant la revue globale. Décidé : aucun achat de points, seulement un abonnement premium. Idées en lice : la ligue de pronostics « Bats l'Oracle », l'assistant d'entraîneur (Claude propose de viser les entraîneurs amateurs, pas les pros), « L'arbitre des débats » (idée de Claude). Point clé : les niveaux 1 à 3 sont les mêmes quel que soit le choix, rien ne presse. Seule contrainte immédiate : au niveau 1, choisir une source avec des **données par match**, en club et en sélection. Devoir rendu le 2026-10-28 (OneFootball, Mon Petit Prono, Sorare) : recommandation de Claude dans `VISION.md` (garder « Bats l'Oracle », couper l'IA d'entraîneur, fondre l'arbitre des débats dans l'Analyste).
 - **Acquis de la théorie :** dans un workflow, c'est le code qui fixe le chemin (les appels au LLM restent non déterministes) ; un agent, c'est le LLM qui tourne en boucle avec des outils et choisit lui-même. Le critère n'est pas « code ou no-code ». Un framework (LangGraph, Agent SDK) sert à construire les deux. Patterns pour le Tracker : **routing** pour une question simple (« buts de Kane » → agent stats sur DuckDB, pas le web), **orchestrator-workers** quand les sous-tâches ne sont pas prévisibles (« Kane ou Mbappé pour le Ballon d'Or ? » → stats + actu RAG, synthèse par l'orchestrateur, critique avant la réponse). Les critères du Ballon d'Or vont dans le prompt, pas dans une recherche.
 - **Roadmap revue le 2026-10-24** (détail dans `CLAUDE.md`, section « Points de vigilance ») : une page Streamlit dès le niveau 2 (tranche verticale), la contamination du backtest à traiter au niveau 3 (joueurs anonymisés, top 30 de chaque édition), une source de données à choisir au niveau 1 (Transfermarkt n'a pas d'API), et trois briques ajoutées : pytest, Pydantic, Docker.
@@ -46,6 +46,7 @@
   - Prouve parfois le mauvais point (question 3 : a choisi orchestrator-workers avec un exemple à un seul worker). Met un mauvais nom sur une bonne idée (a appelé « prompt chaining » un orchestrator-workers). Reprend le mot « déterministe » pour un workflow malgré la correction. Au quiz : « routing » pour une boucle producteur/critique (c'est evaluator-optimizer).
   - Messages de commit irréguliers : `d1534ad` et `72cbf33` sont bien formulés, `2714001` non.
   - Annotations : a cru que l'interpréteur les exploite (ce sont l'éditeur et mypy qui s'en servent).
+  - Abandonne une bonne réponse au premier doute (`git log` hors ligne, revanche du 29/10). Donne des indices trop vagues pour justifier un pattern (« le LLM choisit », « le LLM vérifie ») : exiger le signe distinctif (une case prévue, des sous-tâches imprévues, une boucle).
   - Perd patience quand les questions s'empilent (règle ajoutée dans `CLAUDE.md` : 1 ou 2 questions par message, seulement celles qui bloquent).
 - **Points forts :** se débloque seul en lisant les messages d'erreur. Honnête quand on lui demande d'où vient une idée. Pose de bonnes questions de méthode (contrat, mémoire du projet, aide-mémoire). Teste dans le terminal quand on le lui demande. Bon pronostic de classement. Au quiz : a demandé de couper les suggestions de prompt qui l'aidaient trop ; a trouvé seul une fuite réelle (la vérité terrain du projet ou des articles d'après le vote, lisibles par l'Oracle).
 - **Environnement :** Windows, PowerShell, Python 3.13.14 (Microsoft Store). Activer le venv avec `.\.venv\Scripts\Activate.ps1`. VS Code avec l'extension Claude Code et l'interpréteur du venv sélectionné. Utiliser le panneau Terminal de l'app, ou coller la sortie du terminal VS Code. Git : branche `main`, remote `origin` = github.com/YanisFr77/ballon-dor-tracker, authentification via Git Credential Manager. Identité : gmail en local pour ce repo, email de l'université en global.
@@ -56,13 +57,13 @@ Une question flash au « on reprend » sur une notion dont la date est passée (
 
 | Notion | Prochaine révision |
 |---|---|
-| Les 5 patterns de « Building effective agents » (noms + quand les utiliser) | 2026-10-30 |
+| Les 5 patterns de « Building effective agents » (noms + quand les utiliser) | 2026-10-31 |
 | Workflow contre agent (qui choisit le chemin ?) | 2026-11-01 |
 | Fail fast : `d[k]` contre `d.get(k)` | 2026-11-03 |
 | `.env` contre `.venv` | 2026-11-05 |
 | `x = a,` : qu'est-ce que ça crée ? | 2026-11-07 |
-| Git sans réseau : qu'est-ce qui marche, qu'est-ce qui échoue ? | 2026-10-30 |
-| Contamination par la mémoire du LLM, et ses parades | 2026-10-30 |
+| Git sans réseau : qu'est-ce qui marche, qu'est-ce qui échoue ? | 2026-10-31 |
+| Contamination par la mémoire du LLM, et ses parades | 2026-10-31 |
 
 ## Historique des sessions
 
@@ -102,3 +103,7 @@ Résumé de 3 à 5 lignes par session. Le détail des anciennes sessions est dan
 ### 2026-10-27/28 : Théorie, question 3 (théorie validée ✅)
 - D'abord « prompt chaining » pour décrire en fait un orchestrator-workers mélangé avec du routing. Puis un bon critère (des sous-tâches imprévisibles), mais un exemple à un seul worker.
 - Validé avec « Kane ou Mbappé pour le Ballon d'Or ? » (stats + actu). Retenu : routing pour les questions simples, orchestrator-workers pour les complexes.
+
+### 2026-10-29 : Revanche du quiz (PC)
+- Défi pas encore fait (rien de pushé). Revanche du quiz : 1,5/3, perdue. Les idées sont là, la précision manque : bonne réponse abandonnée (`git log`), routing confondu avec orchestrator-workers, parade qui vise la mauvaise fuite.
+- Nouvelle revanche prévue après le défi.
