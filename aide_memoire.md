@@ -172,6 +172,20 @@ Source : « Building effective agents » (Anthropic).
 - Joueur absent de la vérité terrain (hors top 30) : son rang **parmi les candidats** reste connu, il est derrière tous ceux qui y sont.
 - Message de commit : verbe + ce qui change (« Remet Pedri, ajoute Olise hors prédiction »), pas un titre.
 
+## Appeler un LLM
+
+- **Qui fait quoi :** le LLM ne produit que du texte (ici un classement et des justifications). Tout ce qui se calcule (écarts, score) reste dans le code, et la vérité terrain ne part jamais dans le prompt.
+- **Sortie structurée :** on décrit la forme attendue avec une classe Pydantic, on envoie son schéma (`Classe.model_json_schema()`), on relit la réponse avec `Classe.model_validate_json(texte)`. Le schéma garantit la **forme**, pas le **fond** : un nom mal recopié passe le schéma. Il faut un contrôle à soi derrière.
+- **Prompt ambigu, réponse ambiguë :** « recopie le nom » au-dessus de `- Kane (Bayern)` a donné `Kane (Bayern)`. Un champ par information (`Nom : Kane | Club : Bayern`) règle le problème.
+- **Sonde de contamination :** avant de mesurer, demander au modèle la réponse sans aucune donnée (« Qui a gagné le Ballon d'Or 2026 ? »). S'il sait, le test ne vaut rien.
+- **Un LLM n'est pas déterministe :** deux appels donnent deux réponses (écart 18, puis 8). Un seul appel n'est pas une mesure : on répète et on fait la moyenne.
+- **Budget :** réponses en cache sur disque (même prompt, même modèle : pas de nouvel appel), tokens affichés, journal des appels. Pour tester le code, on rejoue le cache.
+
+```python
+if __name__ == "__main__":   # vrai seulement avec "python fichier.py"
+    ...                      # ignoré quand un autre fichier fait "from fichier import ..."
+```
+
 ## Appeler une API
 - Secret dans `.env` (`NOM=valeur`, sans guillemets), lu avec `python-dotenv` : `load_dotenv()` puis `os.environ["NOM"]`. Le `.env` est dans le `.gitignore`.
 - `requests.get(url, headers={...}, params={...}, timeout=10)`, puis `.json()` pour avoir un dict.

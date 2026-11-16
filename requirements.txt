@@ -1,0 +1,6 @@
+# Paquets du projet. Pour tout installer dans un venv neuf :
+#   pip install -r requirements.txt
+requests==2.34.2
+python-dotenv==1.2.4
+google-genai==3.3.0
+pydantic==2.14.3

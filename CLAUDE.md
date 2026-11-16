@@ -73,6 +73,17 @@ Branche transverse **n8n** (mode "jour de fatigue") : workflows d'automatisation
 
 **Stack du boulot (Franciliane)** : GCP et BigQuery (Yanis connaît), migration vers l'open source et le cloud souverain (Apache Superset pour le reporting, stockage en France via S3NS). Privilégier ces technos quand elles conviennent au besoin, pour que le projet perso serve aussi au boulot (par exemple Langfuse, open source et auto-hébergeable, pour l'observabilité).
 
+## Budget LLM (demande de Yanis, 2026-11-16)
+
+Chaque appel à une API LLM est compté, même gratuit : c'est une habitude du métier (coût par exécution, niveau 3).
+
+- **Claude ne lance jamais un script qui appelle un LLM sans l'annoncer avant** : combien d'appels, quel modèle, coût estimé. Yanis dit go.
+- **Un appel = une question dont on veut la réponse.** Pour vérifier que le code marche (lecture de la réponse, affichage, calcul de l'écart), on rejoue une réponse enregistrée, on ne rappelle pas le LLM.
+- **Tout script qui appelle un LLM** garde ses réponses en cache sur disque (même prompt et même modèle : pas de nouvel appel), affiche les tokens et le coût de l'appel, et l'ajoute à un journal.
+- **Le modèle le moins cher par défaut** pour la mise au point. Le modèle cher seulement pour une mesure qu'on garde.
+- **Compte payant :** crédit prépayé, rechargement automatique désactivé. Le plafond est alors dur : on ne peut pas dépasser le crédit.
+- Si Yanis relance plusieurs fois le même appel sans rien changer, Claude le signale.
+
 ## Rythme de Yanis
 
 - Alternance 1 mois entreprise / 1 mois école.

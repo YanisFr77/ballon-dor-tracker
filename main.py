@@ -93,6 +93,9 @@ olise = Joueur("Michael Olisé", "FC Bayern", 22, 26, ["Bundesliga", "Coupe d'Al
 
 candidats = [yamal, kane, dembele, mbappe, kvara, olise, pedri]
 
-classement(candidats)
-s = verdict(candidats)
-print(f"Première métrique d'eval 🎯 : {s}")
+# Ce bloc ne s'exécute que si on lance "python main.py".
+# Quand un autre fichier fait "from main import ...", il est ignoré.
+if __name__ == "__main__":
+    classement(candidats)
+    s = verdict(candidats)
+    print(f"Première métrique d'eval 🎯 : {s}")

@@ -1,4 +1,4 @@
-# Journal de bord
+﻿# Journal de bord
 
 ## Niveau actuel : 1-2 (Premier contact LLM, puis les stats). Niveau 0 gagné le 2026-10-29 🏆
 
@@ -8,9 +8,11 @@ La finalité : `FINALITE.md`. Les règles et la roadmap : `CLAUDE.md`.
 `main.py` écrit à la main (7 candidats, formule 1,2 × buts + passes + titres), deux machines synchronisées par GitHub, vérité terrain 2026 dans `donnees/`, première métrique d'eval (somme des écarts = 12), théorie « Building effective agents », boss fight gagné à la 2e revanche. Détail dans `HISTORIQUE.md`.
 
 ### Missions des niveaux 1-2 (durée fixe : 5 semaines, fin visée le 2026-12-21)
-- [ ] **2.0 Premier appel LLM : Oracle v0.5** (zone noyau). Un script qui envoie les stats des 7 joueurs de `main.py` à Claude et récupère un podium en sortie structurée (Pydantic). On compare son classement à la baseline (`verdict()`, écart total 12).
+- [ ] **2.0 Premier appel LLM : Oracle v0.5** (zone noyau). Script `prediction_llm.py` : il envoie les stats des candidats de `main.py` à un LLM, récupère un classement en sortie structurée (Pydantic) et le mesure avec `verdict()`, comme la baseline (écart 12). **Le script tourne. Reste : finir la relecture par Yanis, remettre `main.py` à 7 candidats, commit.**
+  - Spec validée : en entrée nom, club, buts, passes, titres ; jamais `RANG_REEL`, ni le score de la formule, ni le barème ; en sortie les 7 classés avec une phrase de justification.
+  - **Résultats du 2026-11-16** (`gemini-3.5-flash-lite`, 1 appel chacun) : sonde de contamination propre (le modèle s'arrête à mars 2026, ne connaît pas le vainqueur). Essai 1 : réponse refusée par `verifier()` (club collé au nom, prompt ambigu), écart 18 relu à la main. Essai 2, prompt clarifié : **écart 8, contre 12 pour la baseline**. 18 puis 8 montre surtout la variance, pas une victoire : à mesurer sur plusieurs appels au niveau 3.
 - [x] 1.1 Source de données : **API-Football retenu** (football-data.org éliminé : pas de stats par joueur en gratuit). Premier appel réussi (`essai_api.py`) : le gratuit couvre les saisons 2022 à 2024, 100 requêtes par jour. Saison 25/26 : un mois du plan Pro au moment du backtest (décidé le 2026-11-16).
-- [ ] 1.2 Ingestion API-Football → DuckDB (zone plomberie) : stats par match d'un joueur, puis des 30 nommés d'une édition. Avec `requirements.txt`.
+- [ ] 1.2 Ingestion API-Football → DuckDB (zone plomberie) : stats par match d'un joueur, puis des 30 nommés d'une édition. **Les données sont dynamiques (rappel de Yanis, 2026-11-16)** : l'ingestion doit pouvoir être relancée pour rafraîchir les stats, et chaque prédiction porte la date de ses données. L'automatisation (chaque semaine) arrive avec n8n ou Cloud Scheduler.
 - [ ] 1.3 Tests pytest sur l'ingestion (ce qui entre, ce qui sort).
 - [ ] 2.1 Oracle v1 : le LLM classe les 30 nommés d'une édition à partir de DuckDB.
 - [ ] 2.2 Première page Streamlit qui affiche l'Oracle v1.
@@ -18,29 +20,31 @@ La finalité : `FINALITE.md`. Les règles et la roadmap : `CLAUDE.md`.
 
 ## Prochaine session : contexte
 
-- **Titre de la prochaine session :** `[2.0] Premier appel LLM : Oracle v0.5`.
-- **Mission suivante : la 2.0, en zone noyau.** Démarrer par du concret, pas par de la théorie. Déroulé proposé :
-  1. Yanis écrit la spec en 5 lignes (but, entrées, sorties, cas limites, critère de fini).
-  2. Clé d'API : Yanis crée un compte sur la Console Anthropic et met 5 $ de crédit (son abonnement Claude ne donne pas accès à l'API, c'est une facturation à part). La clé va dans `.env` sous le nom `ANTHROPIC_API_KEY`. S'il préfère du gratuit pour commencer : une clé Gemini via Google AI Studio (sans carte bancaire), en sachant que le reste du parcours vise l'API Claude.
-  3. Installer `anthropic` et `pydantic`, créer `requirements.txt`.
-  4. Claude génère `oracle.py`, Yanis relit tout (zone noyau). **Avant d'écrire le code, Claude charge la skill `claude-api`** : l'API a changé (sorties structurées avec `client.messages.parse()`).
-  5. Lancer, comparer au classement réel, noter l'écart à côté de celui de la baseline.
-- **Piège à garder en tête pour la 2.0 :** `RANG_REEL` ne doit jamais partir dans le prompt (c'est la vérité terrain). Le Ballon d'Or 2026 est postérieur à la date de coupure des modèles actuels : bonne nouvelle pour l'honnêteté du test.
-- **Choix du modèle :** à faire avec Yanis. Ordre de grandeur pour un appel de cette taille : environ 3 centimes avec Opus 5.5, moins d'un dixième de centime avec Haiku 5.5. 5 $ couvrent largement les niveaux 1-2.
-- **État de `main.py` (commit `d74348a`) :** classe `Joueur` (`score()`, `affiche_joueur()`), `BAREME_TITRES` et `BAREME_PERFORMANCES`, `RANG_REEL` (rangs sur les 7 candidats), `classement()` qui trie sur place, `verdict()` qui affiche les écarts et renvoie leur somme (12). Classement : Yamal 111,8 / Kane 99,2 / Dembélé 93 / Kvara 91,8 / Pedri 79,4 / Mbappé 57,4.
-- **`essai_api.py` :** commité, pas encore relu par Yanis. Zone plomberie : il doit savoir dire ce qui entre et ce qui sort, pas chaque ligne.
-- **Acquis de la théorie :** workflow (le code fixe le chemin) contre agent (le LLM tourne en boucle avec des outils et choisit). Pour le projet : routing pour une question simple, orchestrator-workers quand les sous-tâches ne sont pas prévisibles.
-- **Dette notée pour le niveau 3 (evals) :** le barème v0 (écarts arbitraires, titres collectifs qui écrasent les stats), les stats en sélection ignorées (Mbappé). Leçons du verdict : (1) partir des **30 nommés**, liste publiée avant le vote ; (2) ne comparer que des rangs pris sur le même ensemble de joueurs ; (3) le critère n°1, « décisif et impressionnant », est absent : pistes, les buts dans les gros matchs, la note moyenne par match, la presse via le RAG ; (4) chaque juré vote pour un top 10 (15, 12, 10, 8, 7, 5, 4, 3, 2, 1 points).
+- **Titre de la prochaine session :** `[2.0] Fin de la relecture de prediction_llm.py`.
+- **Où on s'est arrêtés (2026-11-16 au soir) :** `prediction_llm.py` tourne, résultats notés ci-dessus. On était en pleine **relecture (zone noyau)**. Yanis a commité l'essentiel lui-même (`f9c89ac`, « reprise + premier llm », avec `adam` dedans). Restent à commiter : ce passage de relais dans `PROGRESSION.md` et `.gitignore` (`__pycache__/` ajouté).
+- **Première chose à faire : `main.py` contient un 8e joueur de test, `adam`** (ajouté par Yanis en fin de session, sans doute pour voir l'empreinte changer). Il n'est pas dans `RANG_REEL` : `python main.py` et `prediction_llm.py` plantent sur `KeyError: 'adam'` dans `verdict()`. Lui demander ce qu'il a observé (un 4e appel est parti à 21h19, nouveau fichier dans `cache_llm/`), valider l'expérience, puis **lui faire retirer `adam`** et vérifier que `python main.py` affiche 12. Ne pas le retirer à sa place sans lui en parler.
+- **Relecture, état :**
+  - Validé : pourquoi le tri alphabétique dans `construire_prompt` (l'ordre de la liste soufflerait notre classement) ; le LLM ne génère que le classement et les justifications, les écarts viennent de `verdict()`.
+  - Expliqué, à faire reformuler : le texte entre `"""` n'est pas envoyé au LLM, seul le texte du `return` l'est (le prompt = ce qui s'affiche dans le terminal) ; on envoie un texte, pas la fonction ; `empreinte` = code de 16 caractères calculé sur modèle + prompt + schéma, qui sert de nom de fichier de cache.
+  - **Question en attente :** « si tu changes un seul mot du prompt et que tu relances, que se passe-t-il, et pourquoi ? » (réponse attendue : nouvelle empreinte, pas de fichier de cache, donc un nouvel appel).
+  - Pas encore relus : les classes Pydantic `Ligne` et `Classement`, `verifier()`, le bloc `par_nom` / `ordre_llm`. Une ou deux questions, pas plus.
+- **Ensuite :** cocher la 2.0, commit et push (message proposé : « 2.0 : premier appel LLM (prediction_llm.py), règle Budget LLM »), puis mission 1.2 (ingestion API-Football → DuckDB, zone plomberie). Option courte avant la 1.2 : verrouiller les 7 noms dans le schéma (enum), proposé à Yanis et remis à plus tard.
+- **Comment marche `prediction_llm.py` :** `construire_prompt()` (fiches `Nom : … | Club : … | Buts : …`, tri alphabétique) ; `appeler_llm(prompt, schema)` (cache dans `cache_llm/`, confirmation `o/n` avant chaque appel, tokens affichés, journal `journal_llm.jsonl`) ; `verifier()` (les 7 noms exacts, sinon `ValueError`) ; une sonde de contamination en premier (« Qui a remporté le Ballon d'Or 2026 ? »). Modèle : constante `MODELE`.
+- **Fournisseur LLM : Gemini gratuit** (décidé le 2026-11-16, clé `GEMINI_API_KEY` dans `.env`). SDK `google-genai` 3.3.0 : `client.interactions.create(model=, input=, response_format={"type": "text", "mime_type": "application/json", "schema": ...})`, réponse dans `.output_text`, tokens dans `.usage.total_input_tokens` / `total_output_tokens`. Modèles gratuits : `gemini-3.5-flash-lite` (mise au point), `gemini-4-hydrogen` (mesure à garder). Sur l'offre gratuite, les prompts servent à améliorer les produits de Google : jamais de donnée personnelle. Les 5 $ Anthropic attendront la comparaison de modèles (niveau 3) ; ce jour-là, charger la skill `claude-api`.
+- **Budget LLM :** règle dans `CLAUDE.md`, section « Budget LLM ». Claude annonce chaque appel (nombre, modèle, coût) et c'est Yanis qui lance le script dans son terminal.
+- **État de `main.py` :** classe `Joueur`, `BAREME_TITRES`, `RANG_REEL` (7 candidats), `classement()` trie sur place, `verdict()` affiche les écarts et renvoie leur somme (12 avec les 7). Les trois dernières lignes sont sous `if __name__ == "__main__":` pour pouvoir importer sans tout relancer.
+- **`essai_api.py` :** commité, pas encore relu par Yanis. Zone plomberie : il doit savoir dire ce qui entre et ce qui sort.
+- **Dette notée pour le niveau 3 (evals) :** répéter les appels et faire la moyenne (variance 18 puis 8) ; le barème v0 ; les stats en sélection ignorées ; partir des **30 nommés** ; ne comparer que des rangs pris sur le même ensemble ; le critère « décisif et impressionnant » absent ; chaque juré vote pour un top 10 ; contamination partielle possible (Gemini connaît la saison jusqu'en mars 2026) : parade des joueurs anonymisés.
 - **Points fragiles de Yanis (5 au plus) :**
-  1. Annonce « tout est fait » alors que c'est partiel, et saute des sous-questions : relire le fichier avant de valider, lui faire répondre à chaque partie.
-  2. Reprend une réponse d'une autre IA sans savoir l'expliquer : en zone noyau, exiger une reformulation avec ses mots ou un test dans le terminal.
-  3. Sature vite sur la spec et sur les questions empilées : spec en 5 lignes, 1 ou 2 questions par message, puis du concret.
-  4. A modifié l'ensemble évalué après avoir vu le résultat : à surveiller de près au niveau 3.
-  5. Longue pause, puis une nouvelle idée de produit à la reprise : l'idée va au parking de `VISION.md`, et la session démarre par une mission courte.
-- **Points forts :** se débloque seul en lisant les messages d'erreur. Honnête sur l'origine d'une idée. Bons réflexes d'eval (a repéré seul le biais des 6 candidats et la fuite de la vérité terrain). Défend ses choix avec de bons arguments.
-- **Deux machines :** PC fixe et laptop opérationnels. Une session Claude vit sur une seule machine : pour changer, push, pull, nouvelle session, puis « on reprend ».
-- **Environnement :** Windows, PowerShell, Python 3.13 (Microsoft Store). Activer le venv avec `.\.venv\Scripts\Activate.ps1`. Installés dans le venv : `requests`, `python-dotenv`. Git : branche `main`, remote `origin` = github.com/YanisFr77/ballon-dor-tracker, authentification via Git Credential Manager. Clé API-Football dans `.env` (`API_FOOTBALL_KEY`).
-- **Écoute en voiture :** `podcasts.md`. Demander de temps en temps ce qu'il a retenu d'un trajet.
+  1. Annonce « tout est fait » alors que c'est partiel : lui faire répondre à chaque partie.
+  2. En zone noyau, confond vite ce qui est du code, du commentaire et du prompt : faire reformuler avec ses mots, ou montrer dans le terminal.
+  3. Sature vite sur la spec et sur les questions empilées, et perd le fil après une pause : rappeler en une phrase à quoi sert le fichier, 1 ou 2 questions par message, puis du concret.
+  4. A modifié l'ensemble évalué après avoir vu le résultat (Olise, puis `adam` en test) : à surveiller de près au niveau 3.
+  5. Une nouvelle idée de produit : une ligne au parking de `VISION.md`, puis retour à la mission.
+- **Points forts :** a repéré seul la contamination avant le premier appel, et demandé seul une règle de budget. Pose les bonnes questions (« qui calcule les écarts ? », « tu me recommandes ça parce que tu es Claude ? »). Se débloque seul en lisant les erreurs. Expérimente dans le terminal.
+- **Deux machines :** PC fixe et laptop. Une session Claude vit sur une seule machine : push, pull, nouvelle session, puis « on reprend ». La clé Gemini est dans le `.env` du **PC fixe** seulement : à recopier sur le laptop.
+- **Environnement :** Windows, PowerShell, Python 3.13. Venv : `.\.venv\Scripts\Activate.ps1`. Sur une autre machine : `pip install -r requirements.txt`. Git : branche `main`, remote `origin` = github.com/YanisFr77/ballon-dor-tracker.
+- **Écoute en voiture :** `podcasts.md`.
 
 ## Révisions
 
@@ -50,7 +54,7 @@ Une question flash au « on reprend » sur une notion dont la date est passée (
 |---|---|
 | Workflow contre agent (qui choisit le chemin ?) | 2026-11-16 |
 | Les 5 patterns de « Building effective agents » (noms + quand les utiliser) | 2026-11-16 |
-| Contamination par la mémoire du LLM, et ses parades | 2026-11-16 |
+| Contamination par la mémoire du LLM, et ses parades | 2026-11-23 (réussie le 16/11 : repérée seul avant le premier appel) |
 | Eval honnête : ne jamais changer la prédiction après avoir vu la vérité terrain | 2026-11-16 |
 
 ## Historique des sessions
@@ -102,3 +106,8 @@ Résumé de 3 à 5 lignes par session. Le détail des anciennes sessions est dan
 - **Décisions validées par Yanis**, appliquées dans `CLAUDE.md` : contrat en deux zones (noyau et plomberie), niveaux 1-2 joués ensemble avec le LLM d'abord, durée fixe par niveau, suivi allégé, données 25/26 via un mois payant au moment du backtest.
 - **Finalité tranchée : Analyste + Oracle**, écrite dans `FINALITE.md` (nouveau). `VISION.md` gelé jusqu'à la fin du niveau 3. Idée 4 (vidéos tactiques sur TikTok) : au parking, canal de sortie après le niveau 6.
 - `podcasts.md` créé pour les trajets en voiture. Ce fichier a été allégé, le détail est archivé dans `HISTORIQUE.md`.
+
+### 2026-11-16 (soir) : Premier appel LLM (2.0, presque finie)
+- Gemini gratuit choisi après une question franche de Yanis sur le biais de Claude. Règle « Budget LLM » ajoutée à `CLAUDE.md`.
+- `prediction_llm.py` : sonde de contamination propre, essai 1 refusé (prompt ambigu, écart 18), essai 2 à 8 contre 12 pour la baseline. Leçon : un appel n'est pas une mesure.
+- Relecture commencée, pas finie. `main.py` laissé avec un joueur de test (`adam`) à retirer. Commit `f9c89ac` par Yanis.
