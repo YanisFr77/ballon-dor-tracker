@@ -166,3 +166,13 @@ Source : « Building effective agents » (Anthropic).
 | Parallelization | Des sous-tâches en parallèle (*sectioning*), ou la même tâche plusieurs fois pour voter (*voting*) | Gagner du temps, ou de la fiabilité par le vote |
 | Orchestrator-workers | Un LLM découpe la tâche et la distribue à des workers, puis fait la synthèse | Les sous-tâches **ne sont pas prévisibles** à l'avance (ex. « Kane ou Mbappé ? » → stats + actu) |
 | Evaluator-optimizer | Un LLM produit, un autre évalue et renvoie un retour, en boucle | Il existe des critères clairs pour juger, et des retours qui améliorent vraiment le résultat |
+
+## Evals : rester honnête
+- Une eval mesure la prédiction **faite avant** le résultat. Ajouter ou retirer un candidat après avoir vu la vérité terrain fausse le score. Si on le fait pour l'analyse, on l'écrit noir sur blanc.
+- Joueur absent de la vérité terrain (hors top 30) : son rang **parmi les candidats** reste connu, il est derrière tous ceux qui y sont.
+- Message de commit : verbe + ce qui change (« Remet Pedri, ajoute Olise hors prédiction »), pas un titre.
+
+## Appeler une API
+- Secret dans `.env` (`NOM=valeur`, sans guillemets), lu avec `python-dotenv` : `load_dotenv()` puis `os.environ["NOM"]`. Le `.env` est dans le `.gitignore`.
+- `requests.get(url, headers={...}, params={...}, timeout=10)`, puis `.json()` pour avoir un dict.
+- **À savoir :** une offre gratuite cache souvent ses limites (saisons, quotas). On le vérifie par un vrai appel, pas en lisant la page d'accueil. Un quota par jour se contourne en téléchargeant une fois et en stockant en local.
