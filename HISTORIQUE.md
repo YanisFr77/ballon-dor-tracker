@@ -73,3 +73,70 @@ Archive des sessions au détail. Pas lu au démarrage : le résumé est dans `PR
 - Virgule ❌ : il parle d'« un tuple avec une valeur vide en second ». Faux : `x = a,` donne un tuple d'**un seul** élément `(a,)`, la virgule sert juste à marquer le tuple. Les 3 clés trouvées ✅, mais seules 2 sont corrigées (clés du dict renommées en `CDM` et `LDC`) : `"SuperCoupe d'Espagne"` (joueur) ne correspond toujours pas à `"Supercoupe d'Espagne"` (barème). CDM de Yamal confirmée par Claude (Espagne 1-0 a.p. contre l'Argentine, le 19/07/2026, source Foot Mercato). Remarques : le barème est placé après les joueurs (il doit être en haut du fichier), et la CAN est classée comme compétition « secondaire » alors qu'elle est l'équivalent africain de l'Euro.
 - Yanis fatigue sur le barème. **Décision : le barème est gardé en v0, tel quel**, avec ses limites connues (fausse précision des écarts, place de la CAN, titulaire et remplaçant comptés pareil). On l'ajustera au niveau 3, quand le backtest permettra de mesurer. Seuls blocages avant le score : le nom de la Supercoupe d'Espagne (sinon `KeyError`) et la position du barème en haut du fichier.
 - « OMP » = **Oh My Pi**, un harnais d'agent de code pour le terminal, à l'opposé de Pi (harnais minimaliste) : beaucoup d'outils intégrés (LSP, navigateur, subagents). À étudier au niveau 4 comme exemple de harnais.
+
+## Archive du 2026-11-16 : détail retiré de PROGRESSION.md lors de son allègement
+
+### Missions du niveau 0 (détail)
+- [x] 0.1 étape 1 : créer le dossier `ballon-dor-tracker`
+- [x] 0.1 étape 2 : environnement virtuel Python (venv), `.gitignore` racine (`.venv/` et `.env`)
+- [x] 0.1 étape 3 : `git init`, repo GitHub public, premier push
+- [x] 0.1 étape 4 : `main.py` qui classe 5 candidats au Ballon d'Or avec un score (sans code généré par l'IA). C'est en réalité l'édition **2026** (saison 25/26 plus la CDM), et non 2027 comme prévu au départ.
+- [x] 0.2 "Le transfert" : installer Python, VS Code et Git sur le laptop perso, cloner, ajouter un 6e candidat, push, puis pull sur le PC fixe
+- [x] 0.3 "Le verdict" ✅ Vérité terrain : top 30 dans `donnees/ballon_dor_2026_top30.csv` (source ballondor.com, 27/10/2026, ex aequo à la 29e place). Podium trouvé 2/3 (Kane, Yamal). Comparé à l'ordre réel des 6 mêmes joueurs, la plus grosse erreur est Mbappé (6e chez nous, 2e en vrai, ses stats en sélection étaient ignorées). Rodri, Messi, Haaland, Olise et Fabián Ruiz, tous du top 10, n'étaient pas candidats.
+- [x] Théorie : lire "Building effective agents" (Anthropic) et répondre aux 3 questions ✅
+  1. [x] Quelle différence entre un workflow et un agent ?
+  2. [x] Les agents no-code du boulot, c'est plutôt l'un ou l'autre ?
+  3. [x] Un pattern de l'article utile pour le Tracker ? (et pour quelle partie précisément)
+- [x] Installer l'extension Claude Code dans VS Code
+- [x] Revue globale du niveau 0 (2026-10-28) : niveaux 5 et 6 inversés (le RAG avant l'orchestration, sinon l'agent actu n'a rien à lire) ; la source du niveau 1 doit couvrir les **sélections** ; `main.py` devient la **baseline** du backtest. Finalité : voir `VISION.md`, décision en attente.
+- [x] Boss fight du niveau 0 ✅ (2026-10-29)
+  - [x] Quiz (2026-10-28, téléphone) : **3,5/5, perdu d'un demi-point** (il fallait 4). Q1 KeyError pendant le `sort` ✅, Q2 git sans réseau ½ (n'a pas répondu à la partie hors ligne, malgré deux relances), Q3 annotations ignorées ✅, Q4 « routing » au lieu d'evaluator-optimizer ½ (garde-fou juste), Q5 fuite via le RAG ½ (a oublié la mémoire du LLM). Revanche du 2026-10-29 (PC) : **1,5/3, perdue**. Git ½ (`git log` d'abord juste, puis changé en « ne marche pas hors ligne »), patterns ½ (cas A : orchestrator-workers au lieu de routing, indice « le LLM choisit » trop vague ; cas B juste), contamination ½ (mémoire du LLM ✅, anonymisation ✅, 2e parade hors sujet). Revanche n°2 (même soir) : **3/3, gagnée** ✅ (Git hors ligne ; routing contre orchestrator-workers avec les signes distinctifs, ajoutés après relance ; ré-identification malgré l'anonymisation, et poids sur les éditions postérieures à la coupure).
+  - [x] Défi « Le verdict en code » ✅ (2026-10-29, PC, commit `d74348a`) : `RANG_REEL`, `verdict()`, somme des écarts = 12 sur 7 joueurs. Il a fallu une correction : Pedri avait été remplacé par Olise **après** avoir vu le résultat (une fuite dans l'eval). Pedri est remis à sa place (hors top 30, donc 7e), et Olise est gardé avec la mention « ajouté après le verdict ». Le classement n'est plus affiché, ce qui est accepté (doublon avec le verdict).
+
+**Délai :** fin de la première semaine en entreprise.
+
+### Missions du niveau 1 au 2026-10-29 (détail)
+- [ ] 1.1 Choisir la source de données
+  - [x] Critères (2026-10-29). Trouvés par Yanis : limites du gratuit, droits d'utilisation. Validés :
+    | Critère | Poids | Vérification |
+    |---|---|---|
+    | Saisons 22/23 à 25/26 gratuites | Éliminatoire (sauf plan B) | Un vrai appel sur un match de 22/23 |
+    | Données par match (date, adversaire, minutes, buts) | Éliminatoire | Regarder les champs renvoyés par cet appel |
+    | Saison en cours mise à jour chaque semaine (Oracle hebdo) | Éliminatoire | Un appel sur un match récent |
+    | Conditions d'utilisation : stockage et app publique | Presque éliminatoire (changer de source au niveau 7 coûterait cher) | Lire les « Terms » |
+    | Matchs en sélection | Contournable (2e source ou saisie manuelle) | Un appel sur un match de la CDM 2022 |
+    | Quota de requêtes | Un plus (on télécharge une fois dans DuckDB) | Page des tarifs |
+    | Blessures, tactiques | Un plus (scout, Analyste) | |
+  - [x] Candidats comparés : football-data.org éliminé (pas de stats par joueur en gratuit). **API-Football retenu.** Premier appel réussi (`essai_api.py`, clé dans `.env`, `requests` et `python-dotenv` installés) : CDM 2022 OK (64 matchs), 25/26 refusé (« Free plans... try from 2022 to 2024 »). Le gratuit couvre donc les éditions 2023 à 2025, avec 100 requêtes par jour.
+  - [ ] **Décision en attente : la saison 25/26** (édition 2026, la plus précieuse pour l'eval car postérieure à la coupure des modèles) et la saison en cours (Oracle hebdo). Pistes : un mois payant pour tout télécharger une fois dans DuckDB, ou une saisie manuelle. À trancher avant le backtest (niveau 3), pas avant.
+  - [ ] Relecture de `essai_api.py`, puis `requirements.txt`
+
+### Points fragiles et points forts (liste complète au 2026-10-29)
+- **Points fragiles de Yanis à surveiller :**
+  - Annonce « tout est fait » alors que c'est partiel, et saute des questions : relire le fichier avant de valider.
+  - Reprend une suggestion d'une autre IA (Gemini) sans savoir l'expliquer : demander d'où vient l'idée quand un élément dépasse son niveau. A même collé une réponse d'IA (« Voici comment lui expliquer... ») à une question de contrôle : exiger une reformulation avec ses mots, ou un test dans le terminal.
+  - Réponses parfois approximatives ou trop « manuel » : lui demander de reformuler avec ses mots. Il y arrive quand on insiste.
+  - Tuple : croit que `x = a,` crée un tuple avec une « valeur vide en second » (en réalité, un tuple d'un seul élément). À revérifier.
+  - Confusion `.env` (secrets) / `.venv` (dossier du venv).
+  - Lance des commandes sans vérifier ce qu'elles ciblent. Réflexes Linux dans PowerShell.
+  - Mélange les rôles de Git et du venv.
+  - Saute des sous-questions (quiz Q2 au premier tour ; à la revanche n°2, encore le « pourquoi » des patterns, ajouté après relance). Lui faire répondre à **chaque** partie.
+  - Prouve parfois le mauvais point (question 3 : a choisi orchestrator-workers avec un exemple à un seul worker). Met un mauvais nom sur une bonne idée (a appelé « prompt chaining » un orchestrator-workers). Reprend le mot « déterministe » pour un workflow malgré la correction. Au quiz : « routing » pour une boucle producteur/critique (c'est evaluator-optimizer).
+  - Messages de commit irréguliers : `d1534ad` et `72cbf33` sont bien formulés, `2714001` non.
+  - Annotations : a cru que l'interpréteur les exploite (ce sont l'éditeur et mypy qui s'en servent).
+  - Abandonne une bonne réponse au premier doute (`git log` hors ligne, revanche du 29/10). Donne des indices trop vagues pour justifier un pattern (« le LLM choisit », « le LLM vérifie ») : exiger le signe distinctif (une case prévue, des sous-tâches imprévues, une boucle).
+  - A voulu sauter les corrections du défi (« la flemme, c'est déjà très bien ») : il a fallu rappeler le contrat. A modifié l'ensemble évalué après avoir vu le résultat, sans le signaler. Oublie d'enregistrer avant de commiter.
+  - Perd patience quand les questions s'empilent (règle ajoutée dans `CLAUDE.md` : 1 ou 2 questions par message, seulement celles qui bloquent). Le 2026-10-29, saturé par la spec des critères (« j'apprends rien, c'est trop de réflexion ») : quand le fond est là, Claude met au propre lui-même et passe au concret (du code, un vrai appel) au lieu de faire réécrire.
+- **Points forts :** a défendu avec un bon argument son refus d'un affichage redondant (accepté). A trouvé seul que `ecart = 0` était inutile. Se débloque seul en lisant les messages d'erreur. Honnête quand on lui demande d'où vient une idée. Pose de bonnes questions de méthode (contrat, mémoire du projet, aide-mémoire). Teste dans le terminal quand on le lui demande. Bon pronostic de classement. Au quiz : a demandé de couper les suggestions de prompt qui l'aidaient trop ; a trouvé seul une fuite réelle (la vérité terrain du projet ou des articles d'après le vote, lisibles par l'Oracle).
+
+### Table des révisions au 2026-10-29
+| Notion | Prochaine révision |
+|---|---|
+| Les 5 patterns de « Building effective agents » (noms + quand les utiliser) | 2026-11-05 |
+| Workflow contre agent (qui choisit le chemin ?) | 2026-11-01 |
+| Fail fast : `d[k]` contre `d.get(k)` | 2026-11-03 |
+| `.env` contre `.venv` | 2026-11-05 |
+| `x = a,` : qu'est-ce que ça crée ? | 2026-11-07 |
+| Git sans réseau : qu'est-ce qui marche, qu'est-ce qui échoue ? | 2026-11-05 |
+| Contamination par la mémoire du LLM, et ses parades | 2026-11-05 |
+| Eval honnête : ne jamais changer la prédiction après avoir vu la vérité terrain | 2026-10-31 |

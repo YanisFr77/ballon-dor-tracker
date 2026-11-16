@@ -1,69 +1,57 @@
 # Journal de bord
 
-## Niveau actuel : 0 (Le vestiaire)
+## Niveau actuel : 1-2 (Premier contact LLM, puis les stats). Niveau 0 gagné le 2026-10-29 🏆
 
-### Missions du niveau 0
-- [x] 0.1 étape 1 : créer le dossier `ballon-dor-tracker`
-- [x] 0.1 étape 2 : environnement virtuel Python (venv), `.gitignore` racine (`.venv/` et `.env`)
-- [x] 0.1 étape 3 : `git init`, repo GitHub public, premier push
-- [x] 0.1 étape 4 : `main.py` qui classe 5 candidats au Ballon d'Or avec un score (sans code généré par l'IA). C'est en réalité l'édition **2026** (saison 25/26 plus la CDM), et non 2027 comme prévu au départ.
-- [x] 0.2 "Le transfert" : installer Python, VS Code et Git sur le laptop perso, cloner, ajouter un 6e candidat, push, puis pull sur le PC fixe
-- [x] 0.3 "Le verdict" ✅ Vérité terrain : top 30 dans `donnees/ballon_dor_2026_top30.csv` (source ballondor.com, 27/10/2026, ex aequo à la 29e place). Podium trouvé 2/3 (Kane, Yamal). Comparé à l'ordre réel des 6 mêmes joueurs, la plus grosse erreur est Mbappé (6e chez nous, 2e en vrai, ses stats en sélection étaient ignorées). Rodri, Messi, Haaland, Olise et Fabián Ruiz, tous du top 10, n'étaient pas candidats.
-- [x] Théorie : lire "Building effective agents" (Anthropic) et répondre aux 3 questions ✅
-  1. [x] Quelle différence entre un workflow et un agent ?
-  2. [x] Les agents no-code du boulot, c'est plutôt l'un ou l'autre ?
-  3. [x] Un pattern de l'article utile pour le Tracker ? (et pour quelle partie précisément)
-- [x] Installer l'extension Claude Code dans VS Code
-- [x] Revue globale du niveau 0 (2026-10-28) : niveaux 5 et 6 inversés (le RAG avant l'orchestration, sinon l'agent actu n'a rien à lire) ; la source du niveau 1 doit couvrir les **sélections** ; `main.py` devient la **baseline** du backtest. Finalité : voir `VISION.md`, décision en attente.
-- [ ] Boss fight du niveau 0
-  - [ ] Quiz (2026-10-28, téléphone) : **3,5/5, perdu d'un demi-point** (il fallait 4). Q1 KeyError pendant le `sort` ✅, Q2 git sans réseau ½ (n'a pas répondu à la partie hors ligne, malgré deux relances), Q3 annotations ignorées ✅, Q4 « routing » au lieu d'evaluator-optimizer ½ (garde-fou juste), Q5 fuite via le RAG ½ (a oublié la mémoire du LLM). Revanche du 2026-10-29 (PC) : **1,5/3, perdue**. Git ½ (`git log` d'abord juste, puis changé en « ne marche pas hors ligne »), patterns ½ (cas A : orchestrator-workers au lieu de routing, indice « le LLM choisit » trop vague ; cas B juste), contamination ½ (mémoire du LLM ✅, anonymisation ✅, 2e parade hors sujet). **Nouvelle revanche** après le défi, sur les mêmes notions.
-  - [ ] Défi « Le verdict en code » : **pas encore fait** (2026-10-29). Énoncé dans `boss_fight_0.md` (laptop, train, sans IA). Claude recalcule lui-même les réponses attendues depuis le CSV (elles ne sont pas écrites ici : Yanis lit ce fichier).
+La finalité : `FINALITE.md`. Les règles et la roadmap : `CLAUDE.md`.
 
-**Délai :** fin de la première semaine en entreprise.
+### Niveau 0 (terminé)
+`main.py` écrit à la main (7 candidats, formule 1,2 × buts + passes + titres), deux machines synchronisées par GitHub, vérité terrain 2026 dans `donnees/`, première métrique d'eval (somme des écarts = 12), théorie « Building effective agents », boss fight gagné à la 2e revanche. Détail dans `HISTORIQUE.md`.
+
+### Missions des niveaux 1-2 (durée fixe : 5 semaines, fin visée le 2026-12-21)
+- [ ] **2.0 Premier appel LLM : Oracle v0.5** (zone noyau). Un script qui envoie les stats des 7 joueurs de `main.py` à Claude et récupère un podium en sortie structurée (Pydantic). On compare son classement à la baseline (`verdict()`, écart total 12).
+- [x] 1.1 Source de données : **API-Football retenu** (football-data.org éliminé : pas de stats par joueur en gratuit). Premier appel réussi (`essai_api.py`) : le gratuit couvre les saisons 2022 à 2024, 100 requêtes par jour. Saison 25/26 : un mois du plan Pro au moment du backtest (décidé le 2026-11-16).
+- [ ] 1.2 Ingestion API-Football → DuckDB (zone plomberie) : stats par match d'un joueur, puis des 30 nommés d'une édition. Avec `requirements.txt`.
+- [ ] 1.3 Tests pytest sur l'ingestion (ce qui entre, ce qui sort).
+- [ ] 2.1 Oracle v1 : le LLM classe les 30 nommés d'une édition à partir de DuckDB.
+- [ ] 2.2 Première page Streamlit qui affiche l'Oracle v1.
+- [ ] Revue globale, puis boss fight des niveaux 1-2.
 
 ## Prochaine session : contexte
 
-- **Titre de la prochaine session :** `[0.B] Boss fight : verdict du défi et revanche n°2`.
-- **Mission suivante :** (1) Yanis fait le **défi** de `boss_fight_0.md` dans le train, puis push ; Claude le vérifie (lancer `main.py`, interroger sur une ligne au hasard, relire le message de commit) ; (2) **revanche n°2 du quiz** (3 questions nouvelles sur Git hors ligne, routing contre orchestrator-workers, parades à la contamination ; victoire à 2,5/3) ; (3) faire **trancher la finalité** (recommandation dans `VISION.md`, section « Revue globale du niveau 0 ») ; (4) si victoire, le niveau 1 en mode copilote (expliquer d'abord comment se passe une mission dans ce mode). La revue globale est faite.
-- **Décision en attente : la finalité de l'app** (`VISION.md`), à trancher pendant la revue globale. Décidé : aucun achat de points, seulement un abonnement premium. Idées en lice : la ligue de pronostics « Bats l'Oracle », l'assistant d'entraîneur (Claude propose de viser les entraîneurs amateurs, pas les pros), « L'arbitre des débats » (idée de Claude). Point clé : les niveaux 1 à 3 sont les mêmes quel que soit le choix, rien ne presse. Seule contrainte immédiate : au niveau 1, choisir une source avec des **données par match**, en club et en sélection. Devoir rendu le 2026-10-28 (OneFootball, Mon Petit Prono, Sorare) : recommandation de Claude dans `VISION.md` (garder « Bats l'Oracle », couper l'IA d'entraîneur, fondre l'arbitre des débats dans l'Analyste).
-- **Acquis de la théorie :** dans un workflow, c'est le code qui fixe le chemin (les appels au LLM restent non déterministes) ; un agent, c'est le LLM qui tourne en boucle avec des outils et choisit lui-même. Le critère n'est pas « code ou no-code ». Un framework (LangGraph, Agent SDK) sert à construire les deux. Patterns pour le Tracker : **routing** pour une question simple (« buts de Kane » → agent stats sur DuckDB, pas le web), **orchestrator-workers** quand les sous-tâches ne sont pas prévisibles (« Kane ou Mbappé pour le Ballon d'Or ? » → stats + actu RAG, synthèse par l'orchestrateur, critique avant la réponse). Les critères du Ballon d'Or vont dans le prompt, pas dans une recherche.
-- **Roadmap revue le 2026-10-24** (détail dans `CLAUDE.md`, section « Points de vigilance ») : une page Streamlit dès le niveau 2 (tranche verticale), la contamination du backtest à traiter au niveau 3 (joueurs anonymisés, top 30 de chaque édition), une source de données à choisir au niveau 1 (Transfermarkt n'a pas d'API), et trois briques ajoutées : pytest, Pydantic, Docker.
-- **La correction de la ligne 54** (`.get` → crochets) fait partie du défi : vérifier qu'elle est faite. Question de la 0.2 restée ouverte, à poser au moment où on installe la première librairie : générer et utiliser un `requirements.txt`.
-- **État de `main.py` (commit `72cbf33`) :** classe `Joueur` (`score()`, `affiche_joueur()`), `BAREME_TITRES` (accès en `[t]`) et `BAREME_PERFORMANCES` en haut du fichier, `classement(joueurs: list[Joueur])` qui trie sur place et affiche. Formule : 1,2 × buts + passes + points des titres. Classement : Yamal 111,8 / Kane 99,2 / Dembélé 93 / Kvara 91,8 / Pedri 79,4 / Mbappé 57,4.
-- **Deux machines :** le PC fixe et le laptop sont opérationnels (le laptop a Python 3.13.7, Git 2.53, VS Code 1.140, et le compte GitHub YanisFr77 enregistré). Une session Claude vit sur une seule machine : pour changer de machine, push de `PROGRESSION.md`, pull, nouvelle session, puis « on reprend ».
-- **`aide_memoire.md` :** créé à la demande de Yanis, à compléter au fil des missions (règle dans `CLAUDE.md`).
-- **Données du niveau 0 :** saisie manuelle depuis **Transfermarkt**, saison 25/26, **stats en club uniquement** (la sélection compte seulement via les titres). Titres issus des pages palmarès. À partir du niveau 1, il faudra une source qui ait une API (à choisir).
-- **Dette notée pour le niveau 3 (evals) :** le barème v0 (écarts arbitraires, place de la CAN, titulaire et remplaçant comptés pareil, les titres collectifs qui écrasent les stats), les stats en sélection ignorées (confirmé par le verdict : Mbappé). Leçons du verdict : (1) l'ensemble des candidats est lui-même une prédiction, donc partir des **30 nommés** (liste publiée avant le vote, donc point-in-time) ; (2) ne comparer que des rangs pris sur le même ensemble de joueurs ; (3) le critère n°1, « décisif et impressionnant », est absent : pistes de mesure, les buts dans les gros matchs ou décisifs pour le score et la note moyenne par match, plus la presse via le RAG ; (4) chaque juré vote pour un top 10 (15, 12, 10, 8, 7, 5, 4, 3, 2, 1 points).
-- **Points fragiles de Yanis à surveiller :**
-  - Annonce « tout est fait » alors que c'est partiel, et saute des questions : relire le fichier avant de valider.
-  - Reprend une suggestion d'une autre IA (Gemini) sans savoir l'expliquer : demander d'où vient l'idée quand un élément dépasse son niveau. A même collé une réponse d'IA (« Voici comment lui expliquer... ») à une question de contrôle : exiger une reformulation avec ses mots, ou un test dans le terminal.
-  - Réponses parfois approximatives ou trop « manuel » : lui demander de reformuler avec ses mots. Il y arrive quand on insiste.
-  - Tuple : croit que `x = a,` crée un tuple avec une « valeur vide en second » (en réalité, un tuple d'un seul élément). À revérifier.
-  - Confusion `.env` (secrets) / `.venv` (dossier du venv).
-  - Lance des commandes sans vérifier ce qu'elles ciblent. Réflexes Linux dans PowerShell.
-  - Mélange les rôles de Git et du venv.
-  - Saute des sous-questions (quiz Q2 : trois fois de suite, rien sur la partie « sans réseau »). Lui faire répondre à **chaque** partie.
-  - Prouve parfois le mauvais point (question 3 : a choisi orchestrator-workers avec un exemple à un seul worker). Met un mauvais nom sur une bonne idée (a appelé « prompt chaining » un orchestrator-workers). Reprend le mot « déterministe » pour un workflow malgré la correction. Au quiz : « routing » pour une boucle producteur/critique (c'est evaluator-optimizer).
-  - Messages de commit irréguliers : `d1534ad` et `72cbf33` sont bien formulés, `2714001` non.
-  - Annotations : a cru que l'interpréteur les exploite (ce sont l'éditeur et mypy qui s'en servent).
-  - Abandonne une bonne réponse au premier doute (`git log` hors ligne, revanche du 29/10). Donne des indices trop vagues pour justifier un pattern (« le LLM choisit », « le LLM vérifie ») : exiger le signe distinctif (une case prévue, des sous-tâches imprévues, une boucle).
-  - Perd patience quand les questions s'empilent (règle ajoutée dans `CLAUDE.md` : 1 ou 2 questions par message, seulement celles qui bloquent).
-- **Points forts :** se débloque seul en lisant les messages d'erreur. Honnête quand on lui demande d'où vient une idée. Pose de bonnes questions de méthode (contrat, mémoire du projet, aide-mémoire). Teste dans le terminal quand on le lui demande. Bon pronostic de classement. Au quiz : a demandé de couper les suggestions de prompt qui l'aidaient trop ; a trouvé seul une fuite réelle (la vérité terrain du projet ou des articles d'après le vote, lisibles par l'Oracle).
-- **Environnement :** Windows, PowerShell, Python 3.13.14 (Microsoft Store). Activer le venv avec `.\.venv\Scripts\Activate.ps1`. VS Code avec l'extension Claude Code et l'interpréteur du venv sélectionné. Utiliser le panneau Terminal de l'app, ou coller la sortie du terminal VS Code. Git : branche `main`, remote `origin` = github.com/YanisFr77/ballon-dor-tracker, authentification via Git Credential Manager. Identité : gmail en local pour ce repo, email de l'université en global.
+- **Titre de la prochaine session :** `[2.0] Premier appel LLM : Oracle v0.5`.
+- **Mission suivante : la 2.0, en zone noyau.** Démarrer par du concret, pas par de la théorie. Déroulé proposé :
+  1. Yanis écrit la spec en 5 lignes (but, entrées, sorties, cas limites, critère de fini).
+  2. Clé d'API : Yanis crée un compte sur la Console Anthropic et met 5 $ de crédit (son abonnement Claude ne donne pas accès à l'API, c'est une facturation à part). La clé va dans `.env` sous le nom `ANTHROPIC_API_KEY`. S'il préfère du gratuit pour commencer : une clé Gemini via Google AI Studio (sans carte bancaire), en sachant que le reste du parcours vise l'API Claude.
+  3. Installer `anthropic` et `pydantic`, créer `requirements.txt`.
+  4. Claude génère `oracle.py`, Yanis relit tout (zone noyau). **Avant d'écrire le code, Claude charge la skill `claude-api`** : l'API a changé (sorties structurées avec `client.messages.parse()`).
+  5. Lancer, comparer au classement réel, noter l'écart à côté de celui de la baseline.
+- **Piège à garder en tête pour la 2.0 :** `RANG_REEL` ne doit jamais partir dans le prompt (c'est la vérité terrain). Le Ballon d'Or 2026 est postérieur à la date de coupure des modèles actuels : bonne nouvelle pour l'honnêteté du test.
+- **Choix du modèle :** à faire avec Yanis. Ordre de grandeur pour un appel de cette taille : environ 3 centimes avec Opus 5.5, moins d'un dixième de centime avec Haiku 5.5. 5 $ couvrent largement les niveaux 1-2.
+- **État de `main.py` (commit `d74348a`) :** classe `Joueur` (`score()`, `affiche_joueur()`), `BAREME_TITRES` et `BAREME_PERFORMANCES`, `RANG_REEL` (rangs sur les 7 candidats), `classement()` qui trie sur place, `verdict()` qui affiche les écarts et renvoie leur somme (12). Classement : Yamal 111,8 / Kane 99,2 / Dembélé 93 / Kvara 91,8 / Pedri 79,4 / Mbappé 57,4.
+- **`essai_api.py` :** commité, pas encore relu par Yanis. Zone plomberie : il doit savoir dire ce qui entre et ce qui sort, pas chaque ligne.
+- **Acquis de la théorie :** workflow (le code fixe le chemin) contre agent (le LLM tourne en boucle avec des outils et choisit). Pour le projet : routing pour une question simple, orchestrator-workers quand les sous-tâches ne sont pas prévisibles.
+- **Dette notée pour le niveau 3 (evals) :** le barème v0 (écarts arbitraires, titres collectifs qui écrasent les stats), les stats en sélection ignorées (Mbappé). Leçons du verdict : (1) partir des **30 nommés**, liste publiée avant le vote ; (2) ne comparer que des rangs pris sur le même ensemble de joueurs ; (3) le critère n°1, « décisif et impressionnant », est absent : pistes, les buts dans les gros matchs, la note moyenne par match, la presse via le RAG ; (4) chaque juré vote pour un top 10 (15, 12, 10, 8, 7, 5, 4, 3, 2, 1 points).
+- **Points fragiles de Yanis (5 au plus) :**
+  1. Annonce « tout est fait » alors que c'est partiel, et saute des sous-questions : relire le fichier avant de valider, lui faire répondre à chaque partie.
+  2. Reprend une réponse d'une autre IA sans savoir l'expliquer : en zone noyau, exiger une reformulation avec ses mots ou un test dans le terminal.
+  3. Sature vite sur la spec et sur les questions empilées : spec en 5 lignes, 1 ou 2 questions par message, puis du concret.
+  4. A modifié l'ensemble évalué après avoir vu le résultat : à surveiller de près au niveau 3.
+  5. Longue pause, puis une nouvelle idée de produit à la reprise : l'idée va au parking de `VISION.md`, et la session démarre par une mission courte.
+- **Points forts :** se débloque seul en lisant les messages d'erreur. Honnête sur l'origine d'une idée. Bons réflexes d'eval (a repéré seul le biais des 6 candidats et la fuite de la vérité terrain). Défend ses choix avec de bons arguments.
+- **Deux machines :** PC fixe et laptop opérationnels. Une session Claude vit sur une seule machine : pour changer, push, pull, nouvelle session, puis « on reprend ».
+- **Environnement :** Windows, PowerShell, Python 3.13 (Microsoft Store). Activer le venv avec `.\.venv\Scripts\Activate.ps1`. Installés dans le venv : `requests`, `python-dotenv`. Git : branche `main`, remote `origin` = github.com/YanisFr77/ballon-dor-tracker, authentification via Git Credential Manager. Clé API-Football dans `.env` (`API_FOOTBALL_KEY`).
+- **Écoute en voiture :** `podcasts.md`. Demander de temps en temps ce qu'il a retenu d'un trajet.
 
 ## Révisions
 
-Une question flash au « on reprend » sur une notion dont la date est passée (règle dans `CLAUDE.md`). Réussie : J+7, puis J+21, puis la notion sort. Oubliée : J+2.
+Une question flash au « on reprend » sur une notion dont la date est passée (règle dans `CLAUDE.md`). Réussie : J+7, puis J+21, puis la notion sort. Oubliée : J+2. Cinq notions au plus, d'AI engineering seulement.
 
 | Notion | Prochaine révision |
 |---|---|
-| Les 5 patterns de « Building effective agents » (noms + quand les utiliser) | 2026-10-31 |
-| Workflow contre agent (qui choisit le chemin ?) | 2026-11-01 |
-| Fail fast : `d[k]` contre `d.get(k)` | 2026-11-03 |
-| `.env` contre `.venv` | 2026-11-05 |
-| `x = a,` : qu'est-ce que ça crée ? | 2026-11-07 |
-| Git sans réseau : qu'est-ce qui marche, qu'est-ce qui échoue ? | 2026-10-31 |
-| Contamination par la mémoire du LLM, et ses parades | 2026-10-31 |
+| Workflow contre agent (qui choisit le chemin ?) | 2026-11-16 |
+| Les 5 patterns de « Building effective agents » (noms + quand les utiliser) | 2026-11-16 |
+| Contamination par la mémoire du LLM, et ses parades | 2026-11-16 |
+| Eval honnête : ne jamais changer la prédiction après avoir vu la vérité terrain | 2026-11-16 |
 
 ## Historique des sessions
 
@@ -104,6 +92,13 @@ Résumé de 3 à 5 lignes par session. Le détail des anciennes sessions est dan
 - D'abord « prompt chaining » pour décrire en fait un orchestrator-workers mélangé avec du routing. Puis un bon critère (des sous-tâches imprévisibles), mais un exemple à un seul worker.
 - Validé avec « Kane ou Mbappé pour le Ballon d'Or ? » (stats + actu). Retenu : routing pour les questions simples, orchestrator-workers pour les complexes.
 
-### 2026-10-29 : Revanche du quiz (PC)
+### 2026-10-29 : Boss fight du niveau 0 gagné (PC)
 - Défi pas encore fait (rien de pushé). Revanche du quiz : 1,5/3, perdue. Les idées sont là, la précision manque : bonne réponse abandonnée (`git log`), routing confondu avec orchestrator-workers, parade qui vise la mauvaise fuite.
-- Nouvelle revanche prévue après le défi.
+- Défi gagné après une correction (commit `d74348a`, total des écarts = 12). Leçon clé : Pedri remplacé par Olise après le verdict, c'est une fuite ; un joueur hors du top 30 a quand même un rang connu parmi les candidats (le dernier).
+- Revanche n°2 du quiz : 3/3. **Niveau 0 gagné** 🏆. Suite : niveau 1, choix de la source de données.
+
+### 2026-11-16 : Revue complète après 18 jours de pause
+- Passe sur tout le projet à la demande de Yanis. Constat : socle sain, mais trop de cérémonie et le LLM arrivait trop tard.
+- **Décisions validées par Yanis**, appliquées dans `CLAUDE.md` : contrat en deux zones (noyau et plomberie), niveaux 1-2 joués ensemble avec le LLM d'abord, durée fixe par niveau, suivi allégé, données 25/26 via un mois payant au moment du backtest.
+- **Finalité tranchée : Analyste + Oracle**, écrite dans `FINALITE.md` (nouveau). `VISION.md` gelé jusqu'à la fin du niveau 3. Idée 4 (vidéos tactiques sur TikTok) : au parking, canal de sortie après le niveau 6.
+- `podcasts.md` créé pour les trajets en voiture. Ce fichier a été allégé, le détail est archivé dans `HISTORIQUE.md`.

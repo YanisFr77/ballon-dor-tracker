@@ -1,6 +1,6 @@
 # Vision produit
 
-**Statut : idées de Yanis (2026-10-25), pas encore décidées.** Une idée n'entre dans la roadmap de `CLAUDE.md` qu'une fois décidée. Ce fichier n'est pas lu au démarrage : il sert à la revue globale de fin de niveau.
+**Statut : gelé jusqu'à la fin du niveau 3 (décision du 2026-11-16).** La finalité est décidée et vit dans `FINALITE.md` : Analyste + Oracle. Ce fichier garde les idées et leurs revues. Une nouvelle idée d'ici là : une ligne dans le parking (section « Revue du 2026-11-16 »), sans revue. Il n'est pas lu au démarrage.
 
 ## Les idées de Yanis
 
@@ -103,6 +103,30 @@ Entre potes, sur WhatsApp ou Discord : « Mbappé a marqué plus que Haaland en 
 **Le trou commun aux trois : aucune IA qui pronostique avec un bilan mesuré, ni qui explique avec ses sources.** « Bats l'Oracle », c'est Mon Petit Prono avec un adversaire IA dont la précision est affichée, et l'Analyste pour expliquer. Le Ballon d'Or (chaque semaine) et les matchs (chaque week-end) donnent une raison de revenir hors des grands événements.
 
 **Recommandation de Claude :** couper l'IA d'entraîneur (autres utilisateurs, autres données, pas de vérité terrain) ; fondre l'arbitre des débats dans le volet Analyste (mêmes agents, même critique) ; garder « Bats l'Oracle » comme finalité. Décision de Yanis : en attente.
+
+## Idée 4 : vidéos tactiques d'avant-match, automatisées (Yanis, 2026-11-16)
+
+L'idée : la veille d'un gros match (par exemple le Barça), les agents produisent une vidéo « comment l'équipe devrait jouer » et la postent sur TikTok.
+
+**Revue de Claude : non comme finalité, oui comme canal de sortie, plus tard.**
+- **Ce qui est bon :** c'est un vrai pipeline agentique (données → analyse → script → rendu → validation → publication), un rendez-vous chaque semaine, un résultat visible, et la branche n8n lui va bien.
+- **Le mur des données :** la tactique sérieuse demande du tracking ou des données d'événements. API-Football donne les compos, les formations et des stats de match, pas les circuits de passe ni le pressing. Sans ces données, le LLM produit de la tactique plausible mais générique : exactement les « stats inventées » que le projet combat.
+- **Pas de vérité terrain :** « la meilleure tactique » ne se mesure pas (déjà dit pour l'idée 2). Rien à mettre dans une eval.
+- **L'effort part au mauvais endroit :** une vidéo « très qualitative », c'est du gabarit d'animation, de la voix, des sous-titres, du montage. C'est du motion design, pas de l'AI engineering. Les modèles de génération vidéo ne dessinent pas un schéma tactique juste.
+- **TikTok :** une app non auditée qui poste par l'API ne publie qu'en privé (audit à passer). Les images de match et les logos sont protégés.
+- **Version réaliste : « le brief d'avant-match ».** 30 à 45 secondes, un gabarit fixe, trois chiffres sourcés (forme, joueur clé, confrontations) et le pronostic de l'Oracle avec son bilan affiché. Yanis valide avant de poster (validation humaine : un pattern à apprendre). Publication à la main au début. La différence avec les autres comptes : chaque chiffre est vérifié par l'agent critique.
+- **Test à 1 h avant de construire quoi que ce soit :** faire **une** vidéo à la main (script généré à partir de vraies données, montage dans CapCut), la poster, et voir si Yanis aime le faire et si quelqu'un regarde.
+- **Quand :** après le niveau 6, quand les agents existent. Pas avant.
+
+## Revue du 2026-11-16 : geler la vision
+
+Cinq idées en trois semaines, zéro décision. Chaque pause amène une nouvelle idée de produit : c'est la partie amusante, et elle remplace l'avancement. **Décidé avec Yanis : finalité = Analyste + Oracle** (voir `FINALITE.md`), tout le reste en extensions après le niveau 6, et ce fichier **gelé jusqu'à la fin du niveau 3**. Une nouvelle idée d'ici là : une ligne dans le parking ci-dessous, sans revue.
+
+**Parking (une ligne par idée, sans revue) :**
+- Brief vidéo d'avant-match (idée 4).
+- « Bats l'Oracle », ligue de pronostics entre amis.
+- Scout/mercato.
+- Simulation de carrière.
 
 ## Ce qui ne change pas, quel que soit le choix
 
